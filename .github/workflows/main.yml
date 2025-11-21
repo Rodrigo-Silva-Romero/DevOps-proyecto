@@ -1,12 +1,17 @@
 name: Deploy Only
 
 on:
-  workflow_dispatch:   # Permite ejecutarlo manualmente
+  workflow_dispatch:
 
 jobs:
   build_and_push:
     name: Build & Push Images
     runs-on: ubuntu-latest
+
+    outputs:
+      API_IMAGE: ${{ steps.api.outputs.API_IMAGE }}
+      PRODUCT_IMAGE: ${{ steps.product.outputs.PRODUCT_IMAGE }}
+      INVENTORY_IMAGE: ${{ steps.inventory.outputs.INVENTORY_IMAGE }}
 
     steps:
       - name: Checkout
