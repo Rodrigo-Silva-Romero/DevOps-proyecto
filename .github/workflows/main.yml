@@ -30,19 +30,15 @@ jobs:
         run: |
           TAG=${GITHUB_SHA::8}
 
-          # API
           docker build -t ${{ secrets.ECR_API_URL }}:$TAG ./api-gateway
           docker push ${{ secrets.ECR_API_URL }}:$TAG
 
-          # PRODUCT
           docker build -t ${{ secrets.ECR_PRODUCT_URL }}:$TAG ./product-service
           docker push ${{ secrets.ECR_PRODUCT_URL }}:$TAG
 
-          # INVENTORY
           docker build -t ${{ secrets.ECR_INVENTORY_URL }}:$TAG ./inventory-service
           docker push ${{ secrets.ECR_INVENTORY_URL }}:$TAG
 
-          # Guardamos las imágenes
           echo "API_IMAGE=${{ secrets.ECR_API_URL }}:$TAG" >> image-outputs.env
           echo "PRODUCT_IMAGE=${{ secrets.ECR_PRODUCT_URL }}:$TAG" >> image-outputs.env
           echo "INVENTORY_IMAGE=${{ secrets.ECR_INVENTORY_URL }}:$TAG" >> image-outputs.env
@@ -78,12 +74,22 @@ jobs:
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
 
+      # Terraform Init: necesita credenciales en env para S3 backend
       - name: Terraform Init (ecs-task)
         working-directory: infra/ecs-task
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN }}
         run: terraform init -input=false
 
+      # Terraform Apply: hereda credenciales
       - name: Terraform Apply (ecs-task)
         working-directory: infra/ecs-task
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN }}
         run: |
           terraform apply -auto-approve \
             -var environment=dev \
