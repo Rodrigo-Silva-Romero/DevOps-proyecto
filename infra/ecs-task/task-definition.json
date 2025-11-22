@@ -7,15 +7,35 @@
   "executionRoleArn": "arn:aws:iam::851725322802:role/LabRole",
   "containerDefinitions": [
     {
-      "name": "api-gateway",
-      "image": "${APIGATEWAY_IMAGE}",
+      "name": "postgres",
+      "image": "postgres:15-alpine",
       "essential": true,
-      "portMappings": [{ "containerPort": 8000 }],
+      "portMappings": [{ "containerPort": 5432 }],
       "environment": [
-        { "name": "PRODUCT_SERVICE_URL", "value": "http://product:8001" },
-        { "name": "INVENTORY_SERVICE_URL", "value": "http://inventory:8002" },
-        { "name": "REDIS_URL", "value": "redis:6379" }
-      ]
+        { "name": "POSTGRES_USER", "value": "admin" },
+        { "name": "POSTGRES_PASSWORD", "value": "admin123" },
+        { "name": "POSTGRES_DB", "value": "microservices_db" }
+      ],
+      "healthCheck": {
+        "command": ["CMD-SHELL", "pg_isready -U admin -d microservices_db"],
+        "interval": 10,
+        "timeout": 5,
+        "retries": 5,
+        "startPeriod": 10
+      }
+    },
+    {
+      "name": "redis",
+      "image": "redis:7-alpine",
+      "essential": true,
+      "portMappings": [{ "containerPort": 6379 }],
+      "healthCheck": {
+        "command": ["CMD", "redis-cli", "ping"],
+        "interval": 10,
+        "timeout": 3,
+        "retries": 5,
+        "startPeriod": 5
+      }
     },
     {
       "name": "product",
@@ -25,7 +45,8 @@
       "environment": [
         { "name": "DATABASE_URL", "value": "postgresql://admin:admin123@postgres:5432/microservices_db" },
         { "name": "REDIS_URL", "value": "redis://redis:6379" }
-      ]
+      ],
+      "entryPoint": ["sh", "-c", "until nc -z postgres 5432 && nc -z redis 6379; do echo 'Esperando a DB/Redis...'; sleep 3; done; exec npm start"]
     },
     {
       "name": "inventory",
@@ -35,24 +56,21 @@
       "environment": [
         { "name": "DATABASE_URL", "value": "postgres://admin:admin123@postgres:5432/microservices_db?sslmode=disable" },
         { "name": "REDIS_URL", "value": "redis:6379" }
-      ]
+      ],
+      "entryPoint": ["sh", "-c", "until nc -z postgres 5432 && nc -z redis 6379; do echo 'Esperando a DB/Redis...'; sleep 3; done; exec npm start"]
     },
     {
-      "name": "postgres",
-      "image": "postgres:15-alpine",
+      "name": "api-gateway",
+      "image": "${APIGATEWAY_IMAGE}",
       "essential": true,
-      "portMappings": [{ "containerPort": 5432 }],
+      "portMappings": [{ "containerPort": 8000 }],
       "environment": [
-        { "name": "POSTGRES_USER", "value": "admin" },
-        { "name": "POSTGRES_PASSWORD", "value": "admin123" },
-        { "name": "POSTGRES_DB", "value": "microservices_db" }
-      ]
-    },
-    {
-      "name": "redis",
-      "image": "redis:7-alpine",
-      "essential": true,
-      "portMappings": [{ "containerPort": 6379 }]
+        { "name": "PRODUCT_SERVICE_URL", "value": "http://product:8001" },
+        { "name": "INVENTORY_SERVICE_URL", "value": "http://inventory:8002" },
+        { "name": "REDIS_URL", "value": "redis:6379" }
+      ],
+      "entryPoint": ["sh", "-c", "until nc -z product 8001 && nc -z inventory 8002; do echo 'Esperando a Product/Inventory...'; sleep 3; done; exec npm start"]
     }
   ]
 }
+
