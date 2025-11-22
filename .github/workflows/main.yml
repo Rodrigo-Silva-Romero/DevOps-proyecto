@@ -87,25 +87,22 @@ jobs:
           echo "INVENTORY_IMAGE=$INVENTORY_IMAGE"
           echo "-----------------------------------"
 
-      - name: Generate updated TaskDefinition JSON
-        run: |
-          sed \
-            -e "s|\${APIGATEWAY_IMAGE}|${{ env.api }}|g" \
-            -e "s|\${PRODUCT_IMAGE}|${{ env.product }}|g" \
-            -e "s|\${INVENTORY_IMAGE}|${{ env.inventory }}|g" \
-            infra/ecs-task/task-definition.json > final-task.json
+      # Terraform Init: necesita credenciales en env para S3 backend
+      - name: Terraform Init (ecs-task)
+        working-directory: infra/ecs-task
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN }}
+        run: terraform init
 
-          # 🔍 LOG TEMPORAL: mostrar el JSON final generado
-          echo "---- DEBUG: FINAL TASK JSON ----"
-          cat final-task.json
-          echo "--------------------------------"
-
-      - name: Register new TaskDefinition in ECS
-        run: |
-          aws ecs register-task-definition \
-            --cli-input-json file://final-task.json
-
-      - name: Force new ECS Deployment
+      # Terraform Apply: hereda credenciales
+      - name: Terraform Apply (ecs-task)
+        working-directory: infra/ecs-task
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN }}
         run: |
           aws ecs update-service \
             --cluster ${{ secrets.ECS_CLUSTER }} \
