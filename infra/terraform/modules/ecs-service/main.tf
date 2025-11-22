@@ -11,7 +11,7 @@ resource "aws_ecs_task_definition" "minimal" {
     image     = "public.ecr.aws/amazonlinux/amazonlinux:latest"
     essential = true
     portMappings = [{
-      containerPort = 8080
+      containerPort = 8000
       protocol      = "tcp"
     }]
   }])
