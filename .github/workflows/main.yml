@@ -1,63 +1,44 @@
-deploy:
-  name: Deploy ECS (JSON Task)
-  runs-on: ubuntu-latest
-  needs: build_and_push
+name: Deploy Only
 
-  steps:
-    - name: Checkout
-      uses: actions/checkout@v4
+on:
+  workflow_dispatch:
 
-    - name: Configure AWS credentials
-      uses: aws-actions/configure-aws-credentials@v2
-      with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
-        aws-region: ${{ secrets.AWS_REGION }}
+jobs:
+  build_and_push:
+    name: Build & Push Images
+    runs-on: ubuntu-latest
 
-    - name: Download image outputs
-      uses: actions/download-artifact@v4
-      with:
-        name: image-outputs
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
 
-    - name: Load variables
-      id: vars
-      run: |
-        source image-outputs.env
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
+          aws-region: ${{ secrets.AWS_REGION }}
 
-        echo "api=$API_IMAGE" >> $GITHUB_ENV
-        echo "product=$PRODUCT_IMAGE" >> $GITHUB_ENV
-        echo "inventory=$INVENTORY_IMAGE" >> $GITHUB_ENV
+      - name: Login to ECR
+        run: |
+          aws ecr get-login-password --region ${{ secrets.AWS_REGION }} \
+          | docker login --username AWS --password-stdin ${{ secrets.ECR_API_URL }}
 
-    - name: Generate updated TaskDefinition JSON
-      run: |
-        sed \
-          -e "s|\${APIGATEWAY_IMAGE}|${{ env.api }}|g" \
-          -e "s|\${PRODUCT_IMAGE}|${{ env.product }}|g" \
-          -e "s|\${INVENTORY_IMAGE}|${{ env.inventory }}|g" \
-          infra/ecs-task/task-definition.json > final-task.json
+      - name: Build images and save outputs
+        id: build_all
+        run: |
+          TAG=${GITHUB_SHA::8}
 
-    #  REGISTRAMOS LA NUEVA TASK Y CAPTURAMOS EL ARN
-    - name: Register new TaskDefinition in ECS
-      id: register
-      run: |
-        NEW_TASK_ARN=$(aws ecs register-task-definition \
-          --cli-input-json file://final-task.json \
-          --query "taskDefinition.taskDefinitionArn" \
-          --output text)
+          docker build -t ${{ secrets.ECR_API_URL }}:$TAG ./api-gateway
+          docker push ${{ secrets.ECR_API_URL }}:$TAG
 
-        echo "NEW_TASK_ARN=$NEW_TASK_ARN" >> $GITHUB_ENV
-        echo "Nueva task registrada: $NEW_TASK_ARN"
+          docker build -t ${{ secrets.ECR_PRODUCT_URL }}:$TAG ./product-service
+          docker push ${{ secrets.ECR_PRODUCT_URL }}:$TAG
 
-    #  LE DECIMOS A ECS: "USÁ ESTA TASK NUEVA"
-    - name: Update ECS Service with new Task Definition
-      run: |
-        aws ecs update-service \
-          --cluster ${{ secrets.ECS_CLUSTER }} \
-          --service ${{ secrets.ECS_SERVICE }} \
-          --task-definition ${{ env.NEW_TASK_ARN }} \
-          --desired-count 1 \
-          --force-new-deployment
+          docker build -t ${{ secrets.ECR_INVENTORY_URL }}:$TAG ./inventory-service
+          docker push ${{ secrets.ECR_INVENTORY_URL }}:$TAG
 
-    - name: Completed
-      run: echo "🚀 Deploy ECS JSON ejecutado correctamente."
+          echo "API_IMAGE=${{ secrets.ECR_API_URL }}:$TAG" >> image-outputs.env
+          echo "PRODUCT_IMAGE=${{ secrets.ECR_PRODUCT_URL }}:$TAG" >> ima_
+
