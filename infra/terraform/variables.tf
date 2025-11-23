@@ -21,11 +21,6 @@ variable "public_subnet_cidrs" {
   type        = list(string)
 }
 
-variable "private_subnet_cidrs" {
-  description = "CIDR blocks for private subnets"
-  type        = list(string)
-}
-
 #ECR
 variable "ecr_repositories" {
   type = map(string)
