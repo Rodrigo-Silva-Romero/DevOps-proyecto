@@ -15,6 +15,7 @@ jobs:
       - name: Setup Java (Sonar)
         uses: actions/setup-java@v4
         with:
+          distribution: 'temurin'  # <--- obligatorio
           java-version: '11'
 
       - name: Install Sonar and Tools
