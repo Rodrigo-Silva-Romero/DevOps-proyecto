@@ -16,7 +16,11 @@ jobs:
         uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: '17'   # <-- Actualizado a Java 17
+          java-version: '17'
+          cache: false   # Fuerza usar esta versión
+
+      - name: Check Java version
+        run: java -version   # Verifica que realmente se esté usando Java 17
 
       - name: Install Sonar and Tools
         run: |
