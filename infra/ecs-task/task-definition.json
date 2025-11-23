@@ -11,7 +11,7 @@
       "image": "postgres:15-alpine",
       "essential": true,
       "portMappings": [
-        { 
+        {
           "containerPort": 5432,
           "hostPort": 5432,
           "protocol": "tcp"
@@ -28,6 +28,14 @@
         "timeout": 5,
         "retries": 5,
         "startPeriod": 10
+      },
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/dev-core-task",
+          "awslogs-region": "us-east-1",
+          "awslogs-stream-prefix": "postgres"
+        }
       }
     },
     {
@@ -35,7 +43,7 @@
       "image": "redis:7-alpine",
       "essential": true,
       "portMappings": [
-        { 
+        {
           "containerPort": 6379,
           "hostPort": 6379,
           "protocol": "tcp"
@@ -47,6 +55,14 @@
         "timeout": 3,
         "retries": 5,
         "startPeriod": 5
+      },
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/dev-core-task",
+          "awslogs-region": "us-east-1",
+          "awslogs-stream-prefix": "redis"
+        }
       }
     },
     {
@@ -54,7 +70,7 @@
       "image": "${PRODUCT_IMAGE}",
       "essential": true,
       "portMappings": [
-        { 
+        {
           "containerPort": 8001,
           "hostPort": 8001,
           "protocol": "tcp"
@@ -68,14 +84,22 @@
         "sh",
         "-c",
         "until nc -z postgres 5432 && nc -z redis 6379; do echo 'Esperando a DB/Redis...'; sleep 3; done; exec npm start"
-      ]
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/dev-core-task",
+          "awslogs-region": "us-east-1",
+          "awslogs-stream-prefix": "product"
+        }
+      }
     },
     {
       "name": "inventory",
       "image": "${INVENTORY_IMAGE}",
       "essential": true,
       "portMappings": [
-        { 
+        {
           "containerPort": 8002,
           "hostPort": 8002,
           "protocol": "tcp"
@@ -89,14 +113,22 @@
         "sh",
         "-c",
         "until nc -z postgres 5432 && nc -z redis 6379; do echo 'Esperando a DB/Redis...'; sleep 3; done; exec npm start"
-      ]
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/dev-core-task",
+          "awslogs-region": "us-east-1",
+          "awslogs-stream-prefix": "inventory"
+        }
+      }
     },
     {
       "name": "api-gateway",
       "image": "${APIGATEWAY_IMAGE}",
       "essential": true,
       "portMappings": [
-        { 
+        {
           "containerPort": 8000,
           "hostPort": 8000,
           "protocol": "tcp"
@@ -111,7 +143,15 @@
         "sh",
         "-c",
         "until nc -z product 8001 && nc -z inventory 8002; do echo 'Esperando a Product/Inventory...'; sleep 3; done; exec npm start"
-      ]
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/dev-core-task",
+          "awslogs-region": "us-east-1",
+          "awslogs-stream-prefix": "apigateway"
+        }
+      }
     }
   ]
 }
