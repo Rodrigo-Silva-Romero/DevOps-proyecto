@@ -24,7 +24,6 @@ module "vpc" {
 
   vpc_cidr             = var.vpc_cidr
   public_subnet_cidrs  = var.public_subnet_cidrs
-  private_subnet_cidrs = var.private_subnet_cidrs
   environment          = var.environment
 }
 
@@ -67,8 +66,8 @@ module "ecs_service_core" {
   cluster_id        = module.ecs_cluster.cluster_id
   task_definition_arn = ""   # vacío por ahora (pipeline registrará y hará update later)
   desired_count     = 0
-  subnet_ids        = module.vpc.private_subnet_ids
+  subnet_ids        = module.vpc.public_subnet_ids
   security_group_id = module.security_group.ecs_sg_id
-  assign_public_ip  = false
+  assign_public_ip  = true
 target_group_arn = module.alb.target_group_arn
 }
