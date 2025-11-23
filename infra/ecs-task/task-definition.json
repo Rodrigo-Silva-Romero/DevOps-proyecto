@@ -3,13 +3,15 @@
   "networkMode": "awsvpc",
   "requiresCompatibilities": ["FARGATE"],
   "cpu": "1024",
-  "memory": "4096",
+  "memory": "8192",
   "executionRoleArn": "arn:aws:iam::851725322802:role/LabRole",
   "containerDefinitions": [
     {
       "name": "postgres",
       "image": "postgres:15-alpine",
       "essential": true,
+      "cpu": 256,
+      "memory": 2048,
       "portMappings": [
         { "containerPort": 5432, "hostPort": 5432, "protocol": "tcp" }
       ],
@@ -38,6 +40,8 @@
       "name": "redis",
       "image": "redis:7-alpine",
       "essential": true,
+      "cpu": 128,
+      "memory": 1024,
       "portMappings": [
         { "containerPort": 6379, "hostPort": 6379, "protocol": "tcp" }
       ],
@@ -61,6 +65,8 @@
       "name": "product",
       "image": "${PRODUCT_IMAGE}",
       "essential": true,
+      "cpu": 256,
+      "memory": 1024,
       "portMappings": [
         { "containerPort": 8001, "hostPort": 8001, "protocol": "tcp" }
       ],
@@ -86,6 +92,8 @@
       "name": "inventory",
       "image": "${INVENTORY_IMAGE}",
       "essential": true,
+      "cpu": 256,
+      "memory": 1024,
       "portMappings": [
         { "containerPort": 8002, "hostPort": 8002, "protocol": "tcp" }
       ],
@@ -111,6 +119,8 @@
       "name": "api-gateway",
       "image": "${APIGATEWAY_IMAGE}",
       "essential": true,
+      "cpu": 128,
+      "memory": 1024,
       "portMappings": [
         { "containerPort": 8000, "hostPort": 8000, "protocol": "tcp" }
       ],
