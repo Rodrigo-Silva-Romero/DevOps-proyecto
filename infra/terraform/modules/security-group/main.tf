@@ -18,7 +18,7 @@ resource "aws_security_group" "ecs" {
     from_port       = 8000
     to_port         = 8000
     protocol        = "tcp"
-    security_groups = [var.alb_sg_id]  # referencia al SG del ALB
+    security_groups = [aws_security_group.alb.id]  # referencia al SG del ALB
   }
 
   # Outbound: todo permitido
