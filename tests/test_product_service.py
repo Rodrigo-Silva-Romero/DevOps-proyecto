@@ -2,10 +2,9 @@
 
 import sys
 import os
-# Agrega la carpeta del servicio al path para poder importar main.py
 sys.path.append(os.path.join(os.path.dirname(__file__), "../product-service"))
 
-from fastapi.testclient import TestClient
+from starlette.testclient import TestClient  # <-- usar Starlette directamente
 import main  # main.py del servicio
 
 def test_health_endpoint():
@@ -16,4 +15,3 @@ def test_health_endpoint():
     data = response.json()
     assert data["status"] == "healthy"
     assert data["service"] == "product-service"
-
