@@ -6,7 +6,7 @@ sys.path.append("product-service")  # Agrega la carpeta del microservicio al pat
 import main
 from httpx import AsyncClient
 
-@pytest.mark.asyncio
+@pytest.mark.anyio
 async def test_health_endpoint():
     async with AsyncClient(app=main.app, base_url="http://testserver") as client:
         response = await client.get("/health")
