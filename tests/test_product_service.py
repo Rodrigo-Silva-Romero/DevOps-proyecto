@@ -1,6 +1,6 @@
 # tests/test_product_service.py
 import sys
-sys.path.append("product-service")  # Agrega la carpeta del microservicio al path
+sys.path.append("product-service")
 
 from fastapi.testclient import TestClient
 import main
@@ -8,7 +8,7 @@ import main
 def test_health_endpoint():
     client = TestClient(main.app)
     response = client.get("/health")
-
+    
     assert response.status_code == 200
     data = response.json()
     assert "status" in data
