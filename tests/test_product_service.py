@@ -1,18 +1,16 @@
 # tests/test_product_service.py
 import sys
-import pytest
 sys.path.append("product-service")  # Agrega la carpeta del microservicio al path
 
+from fastapi.testclient import TestClient
 import main
-from httpx import AsyncClient
 
-@pytest.mark.anyio
-async def test_health_endpoint():
-    async with AsyncClient(app=main.app, base_url="http://testserver") as client:
-        response = await client.get("/health")
-        
-        assert response.status_code == 200
-        data = response.json()
-        assert "status" in data
-        assert data["status"] == "healthy"
-        assert data["service"] == "product-service"
+def test_health_endpoint():
+    client = TestClient(main.app)
+    response = client.get("/health")
+
+    assert response.status_code == 200
+    data = response.json()
+    assert "status" in data
+    assert data["status"] == "healthy"
+    assert data["service"] == "product-service"
