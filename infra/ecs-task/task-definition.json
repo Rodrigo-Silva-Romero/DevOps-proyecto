@@ -7,21 +7,25 @@
   "executionRoleArn": "arn:aws:iam::851725322802:role/LabRole",
   "containerDefinitions": [
     {
-      name      = web
-      image     = nginx:latest
-      essential = true
-      portMappings = [
+      "name": "web",
+      "image": "nginx:latest",
+      "essential": true,
+      "portMappings": [
         {
-          containerPort = 80
-          hostPort      = 80
-          protocol      = "tcp"
+          "containerPort": 80,
+          "hostPort": 80,
+          "protocol": "tcp"
         }
-      ]
-      logConfiguration = {
-        logDriver = "awslogs"
-        options = {
-          "awslogs-group"         = aws_cloudwatch_log_group.ecs.name
-          "awslogs-region"        = var.aws_region
-          "awslogs-stream-prefix" = "ecs"
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "REEMPLAZAR",
+          "awslogs-region": "REEMPLAZAR",
+          "awslogs-stream-prefix": "ecs"
         }
-      }]
+      }
+    }
+  ]
+}
+
