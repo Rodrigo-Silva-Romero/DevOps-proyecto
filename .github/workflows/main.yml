@@ -78,19 +78,11 @@ jobs:
           echo "PRODUCT_IMAGE=$PRODUCT_IMAGE" >> $GITHUB_ENV
           echo "INVENTORY_IMAGE=$INVENTORY_IMAGE" >> $GITHUB_ENV
 
-      - name: Generate updated TaskDefinition JSON
-        run: |
-          sed \
-            -e "s|\${APIGATEWAY_IMAGE}|${{ env.API_IMAGE }}|g" \
-            -e "s|\${PRODUCT_IMAGE}|${{ env.PRODUCT_IMAGE }}|g" \
-            -e "s|\${INVENTORY_IMAGE}|${{ env.INVENTORY_IMAGE }}|g" \
-            infra/ecs-task/task-definition.json > final-task.json
-
       - name: Register new TaskDefinition in ECS
         id: register
         run: |
           NEW_TASK_ARN=$(aws ecs register-task-definition \
-            --cli-input-json file://final-task.json \
+            --cli-input-json file://task-definition.json \
             --query "taskDefinition.taskDefinitionArn" \
             --output text)
           echo "NEW_TASK_ARN=$NEW_TASK_ARN" >> $GITHUB_ENV
