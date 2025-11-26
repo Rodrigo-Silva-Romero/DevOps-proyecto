@@ -1,4 +1,4 @@
-# Task Definition en Terraform (equivalente al JSON original)
+# Task Definition en Terraform SIN jsonencode
 resource "aws_ecs_task_definition" "dev-core-task" {
   family                   = "dev-core-task"
   network_mode             = "awsvpc"
@@ -7,11 +7,12 @@ resource "aws_ecs_task_definition" "dev-core-task" {
   memory                   = "8192"
   execution_role_arn       = "arn:aws:iam::851725322802:role/LabRole"
 
-  container_definitions = jsonencode([
+  container_definitions = [
     {
       name      = "postgres"
       image     = "postgres:15-alpine"
       essential = true
+
       portMappings = [
         {
           containerPort = 5432
@@ -19,16 +20,18 @@ resource "aws_ecs_task_definition" "dev-core-task" {
           protocol      = "tcp"
         }
       ]
+
       environment = [
         { name = "POSTGRES_USER",     value = "admin" },
         { name = "POSTGRES_PASSWORD", value = "admin123" },
         { name = "POSTGRES_DB",       value = "microservices_db" }
       ]
+
       logConfiguration = {
         logDriver = "awslogs"
         options = {
           awslogs-group         = "/ecs/dev-core-task"
-          awslogs-region        = "us-east-1"
+          awslogs-region        = var.aws_region
           awslogs-stream-prefix = "postgres"
         }
       }
@@ -38,6 +41,7 @@ resource "aws_ecs_task_definition" "dev-core-task" {
       name      = "redis"
       image     = "redis:7-alpine"
       essential = true
+
       portMappings = [
         {
           containerPort = 6379
@@ -45,12 +49,14 @@ resource "aws_ecs_task_definition" "dev-core-task" {
           protocol      = "tcp"
         }
       ]
+
       environment = []
+
       logConfiguration = {
         logDriver = "awslogs"
         options = {
           awslogs-group         = "/ecs/dev-core-task"
-          awslogs-region        = "us-east-1"
+          awslogs-region        = var.aws_region
           awslogs-stream-prefix = "redis"
         }
       }
@@ -58,8 +64,9 @@ resource "aws_ecs_task_definition" "dev-core-task" {
 
     {
       name      = "product"
-      image     = ${var.ecr_product_url}:latest
+      image     = "${var.ecr_product_url}:latest"
       essential = true
+
       portMappings = [
         {
           containerPort = 8001
@@ -67,18 +74,21 @@ resource "aws_ecs_task_definition" "dev-core-task" {
           protocol      = "tcp"
         }
       ]
+
       environment = [
         { name = "DATABASE_URL", value = "postgresql://admin:admin123@postgres:5432/microservices_db" },
         { name = "REDIS_URL",    value = "redis://redis:6379" }
       ]
+
       logConfiguration = {
         logDriver = "awslogs"
         options = {
           awslogs-group         = "/ecs/dev-core-task"
-          awslogs-region        = "us-east-1"
+          awslogs-region        = var.aws_region
           awslogs-stream-prefix = "product"
         }
       }
+
       dependsOn = [
         { containerName = "postgres", condition = "START" },
         { containerName = "redis",    condition = "START" }
@@ -87,8 +97,9 @@ resource "aws_ecs_task_definition" "dev-core-task" {
 
     {
       name      = "inventory"
-      image     = ${var.ecr_inventory_url}:latest
+      image     = "${var.ecr_inventory_url}:latest"
       essential = true
+
       portMappings = [
         {
           containerPort = 8002
@@ -96,18 +107,21 @@ resource "aws_ecs_task_definition" "dev-core-task" {
           protocol      = "tcp"
         }
       ]
+
       environment = [
         { name = "DATABASE_URL", value = "postgres://admin:admin123@postgres:5432/microservices_db?sslmode=disable" },
         { name = "REDIS_URL",    value = "redis:6379" }
       ]
+
       logConfiguration = {
         logDriver = "awslogs"
         options = {
           awslogs-group         = "/ecs/dev-core-task"
-          awslogs-region        = "us-east-1"
+          awslogs-region        = var.aws_region
           awslogs-stream-prefix = "inventory"
         }
       }
+
       dependsOn = [
         { containerName = "postgres", condition = "START" },
         { containerName = "redis",    condition = "START" }
@@ -116,8 +130,9 @@ resource "aws_ecs_task_definition" "dev-core-task" {
 
     {
       name      = "api-gateway"
-      image     = ${var.ecr_api_url}:latest
+      image     = "${var.ecr_api_url}:latest"
       essential = true
+
       portMappings = [
         {
           containerPort = 8000
@@ -125,19 +140,22 @@ resource "aws_ecs_task_definition" "dev-core-task" {
           protocol      = "tcp"
         }
       ]
+
       environment = [
         { name = "PRODUCT_SERVICE_URL",  value = "http://localhost:8001" },
         { name = "INVENTORY_SERVICE_URL", value = "http://localhost:8002" },
         { name = "REDIS_URL",             value = "localhost:6379" }
       ]
+
       logConfiguration = {
         logDriver = "awslogs"
         options = {
           awslogs-group         = "/ecs/dev-core-task"
-          awslogs-region        = "us-east-1"
+          awslogs-region        = var.aws_region
           awslogs-stream-prefix = "api-gateway"
         }
       }
+
       dependsOn = [
         { containerName = "postgres",  condition = "HEALTHY" },
         { containerName = "redis",     condition = "HEALTHY" },
@@ -145,10 +163,10 @@ resource "aws_ecs_task_definition" "dev-core-task" {
         { containerName = "inventory", condition = "START" }
       ]
     }
-  ])
+  ]
 }
 
-# ECS Service usando el task mínimo solo en el primer apply
+# ECS Service
 resource "aws_ecs_service" "this" {
   name            = "${var.environment}-ecs-service"
   cluster         = var.cluster_id
