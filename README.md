@@ -1,7 +1,7 @@
 
 # README.md – Proyecto DevOps (StockWiz)
 
-##🚀 StockWiz – Plataforma de Microservicios con CI/CD, IaC y Observabilidad
+## **🚀 StockWiz – Plataforma de Microservicios con CI/CD, IaC y Observabilidad**
 
 StockWiz es un sistema compuesto por múltiples microservicios construido para demostrar la aplicación completa de prácticas modernas de DevOps en un entorno cloud real sobre AWS. El proyecto integra infraestructura como código, pipelines CI/CD, contenedores Docker, orquestación con ECS Fargate, tests automáticos, análisis de calidad, y principios sólidos de despliegue continuo.
 
