@@ -70,6 +70,7 @@ module "ecs_service_core" {
   security_group_id = module.security_group.ecs_sg_id
   assign_public_ip  = true
   target_group_arn  = module.alb.target_group_arn
+  aws_region        = var.aws_region
   ecr_product_url   = module.ecr.ecr_urls["product"]
   ecr_inventory_url = module.ecr.ecr_urls["inventory"]
   ecr_api_url       = module.ecr.ecr_urls["apigateway"]
