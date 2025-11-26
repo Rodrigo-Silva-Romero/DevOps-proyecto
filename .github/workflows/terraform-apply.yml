@@ -20,8 +20,6 @@ jobs:
     steps:
       # Obtener el código
       - name: Checkout code
-      ...
-      - name: Checkout code
         uses: actions/checkout@v3
 
       # Configurar Terraform (misma versión que tu local)
@@ -72,9 +70,9 @@ jobs:
           echo "URL Product: $PRODUCT"
           echo "URL Inventory: $INVENTORY"
 
-          # Actualizar secretos de GitHub
+          # Actualizar secretos de GitHub usando tu PAT
           gh secret set ECR_API_URL --body "$API"
           gh secret set ECR_PRODUCT_URL --body "$PRODUCT"
           gh secret set ECR_INVENTORY_URL --body "$INVENTORY"
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.REPO_ADMIN_PAT }}
