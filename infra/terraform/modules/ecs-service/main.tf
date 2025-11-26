@@ -58,7 +58,7 @@ resource "aws_ecs_task_definition" "dev-core-task" {
 
     {
       name      = "product"
-      image     = "${ECR_PRODUCT_URL}:latest"
+      image     = ${var.ecr_product_url}:latest
       essential = true
       portMappings = [
         {
@@ -87,7 +87,7 @@ resource "aws_ecs_task_definition" "dev-core-task" {
 
     {
       name      = "inventory"
-      image     = "${ECR_INVENTORY_URL}:latest"
+      image     = ${var.ecr_inventory_url}:latest
       essential = true
       portMappings = [
         {
@@ -116,7 +116,7 @@ resource "aws_ecs_task_definition" "dev-core-task" {
 
     {
       name      = "api-gateway"
-      image     = "${ECR_API_URL}:latest"
+      image     = ${var.ecr_api_url}:latest
       essential = true
       portMappings = [
         {
