@@ -48,30 +48,42 @@ jobs:
         run: terraform apply -auto-approve tfplan
 
       # ===================================================
-      # OBTENER OUTPUTS INDIVIDUALES (ecr_api_url, ecr_product_url, ecr_inventory_url)
+      # OBTENER OUTPUTS INDIVIDUALES Y LIMPIARLOS
       # ===================================================
       - name: Exportar ECR URLs a secretos de GitHub
         working-directory: infra/terraform
         run: |
           echo "Obteniendo outputs individuales con terraform -raw..."
 
-          # Leer outputs individuales (no JSON, sin jq)
+          # Leer outputs individuales
           API=$(terraform output -raw ecr_api_url 2>/dev/null || true)
           PRODUCT=$(terraform output -raw ecr_product_url 2>/dev/null || true)
           INVENTORY=$(terraform output -raw ecr_inventory_url 2>/dev/null || true)
 
-          # Imprimir para debug (ver qué trae)
-          echo "=== DEBUG: ECR outputs (raw) ==="
-          echo "API:       '$API'"
-          echo "PRODUCT:   '$PRODUCT'"
-          echo "INVENTORY: '$INVENTORY'"
+          echo "=== DEBUG: RAW (sin limpiar) ==="
+          echo "API RAW: '$API'"
+          echo "PRODUCT RAW: '$PRODUCT'"
+          echo "INVENTORY RAW: '$INVENTORY'"
           echo "================================"
 
-          # Actualizar secretos de GitHub (usa gh CLI y el PAT que guardaste en REPO_ADMIN_PAT)
+          # ================================
+          # LIMPIAR COMILLAS (si vienen)
+          # ================================
+          CLEAN_API=$(echo "$API" | sed 's/"//g')
+          CLEAN_PRODUCT=$(echo "$PRODUCT" | sed 's/"//g')
+          CLEAN_INVENTORY=$(echo "$INVENTORY" | sed 's/"//g')
+
+          echo "=== DEBUG: VALORES LIMPIOS ==="
+          echo "API CLEAN: '$CLEAN_API'"
+          echo "PRODUCT CLEAN: '$CLEAN_PRODUCT'"
+          echo "INVENTORY CLEAN: '$CLEAN_INVENTORY'"
+          echo "==============================="
+
+          # Guardar en secretos
           echo "Actualizando secretos de GitHub..."
-          gh secret set ECR_API_URL        --body "$API"
-          gh secret set ECR_PRODUCT_URL    --body "$PRODUCT"
-          gh secret set ECR_INVENTORY_URL  --body "$INVENTORY"
+          gh secret set ECR_API_URL       --body "$CLEAN_API"
+          gh secret set ECR_PRODUCT_URL   --body "$CLEAN_PRODUCT"
+          gh secret set ECR_INVENTORY_URL --body "$CLEAN_INVENTORY"
 
         env:
           GH_TOKEN: ${{ secrets.REPO_ADMIN_PAT }}
