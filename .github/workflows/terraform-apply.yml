@@ -48,16 +48,19 @@ jobs:
         run: terraform apply -auto-approve tfplan
 
       # ===================================================
-      # EXPORTAR OUTPUTS ECR LIMPIOS (SIN WRAPPER)
+      # EXPORTAR OUTPUTS ECR LIMPIOS (USANDO EL BINARIO REAL + -raw)
       # ===================================================
       - name: Exportar ECR URLs a secretos de GitHub
         working-directory: infra/terraform
         run: |
-          echo "Obteniendo outputs individuales (JSON limpio)..."
+          echo "Obteniendo outputs individuales (raw limpio)..."
 
-          API=$(terraform output -json ecr_api_url | jq -r '.')
-          PRODUCT=$(terraform output -json ecr_product_url | jq -r '.')
-          INVENTORY=$(terraform output -json ecr_inventory_url | jq -r '.')
+          # Forzar ejecución del binario real de Terraform
+          TERRAFORM_BIN=$(which terraform)
+
+          API=$($TERRAFORM_BIN output -raw ecr_api_url)
+          PRODUCT=$($TERRAFORM_BIN output -raw ecr_product_url)
+          INVENTORY=$($TERRAFORM_BIN output -raw ecr_inventory_url)
 
           echo "=== DEBUG CLEAN ==="
           echo "API: '$API'"
