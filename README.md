@@ -1,11 +1,71 @@
 
 # README.md – Proyecto DevOps (StockWiz)
 
-## 🚀 **StockWiz – Plataforma de Microservicios con CI/CD, IaC y Observabilidad**
+##🚀 StockWiz – Plataforma de Microservicios con CI/CD, IaC y Observabilidad
 
-Este proyecto implementa una arquitectura de microservicios en AWS usando **ECS Fargate**, **Terraform**, **CI/CD con GitHub Actions**, **testing automático**, **análisis estático**, y **Docker**.
+StockWiz es un sistema compuesto por múltiples microservicios construido para demostrar la aplicación completa de prácticas modernas de DevOps en un entorno cloud real sobre AWS. El proyecto integra infraestructura como código, pipelines CI/CD, contenedores Docker, orquestación con ECS Fargate, tests automáticos, análisis de calidad, y principios sólidos de despliegue continuo.
 
-Estructura orientada al **Obligatorio DevOps – Agosto 2025**, cumpliendo cada uno de los puntos exigidos en la rúbrica.
+Este repositorio fue diseñado para cumplir con los requerimientos del Obligatorio de DevOps – Agosto 2025 (ORT ATI), mostrando un flujo completo de trabajo desde el desarrollo local hasta el despliegue automatizado en AWS.
+
+🎯 Objetivos del Proyecto
+
+Diseñar e implementar una arquitectura basada en microservicios.
+
+Contenerizar cada servicio mediante Docker.
+
+Construir infraestructura reproducible con Terraform.
+
+Configurar pipelines de CI/CD que automaticen calidad y despliegue.
+
+Monitorear servicios usando CloudWatch.
+
+Mantener buenas prácticas: versionado, seguridad, calidad y automatización.
+
+✨ Componentes Principales
+
+3 microservicios (Go + Python) + API Gateway.
+
+ECS Fargate como plataforma serverless de contenedores.
+
+ECR como repositorio de imágenes.
+
+ALB para exposición del tráfico.
+
+VPC personalizada con subnets públicas/privadas.
+
+SonarCloud para análisis estático.
+
+Tests automáticos con pytest e integración Postman.
+
+GitHub Actions para automatizar construcción, análisis y despliegue.
+
+🧩 Flujo General de DevOps
+
+El desarrollador crea una rama feature → código nuevo.
+
+CI ejecuta análisis Sonar + tests.
+
+Tras aprobación del PR → merge a main.
+
+Pipeline de Terraform despliega o actualiza infraestructura.
+
+ECS toma imágenes nuevas desde ECR y crea un nuevo deployment.
+
+CloudWatch captura logs y métricas en tiempo real.
+
+📦 Infraestructura Provisionada Automáticamente
+
+Red: VPC, subnets, route tables.
+
+Seguridad: Security Groups, IAM roles.
+
+Compute: ECS cluster + servicios + task definitions.
+
+Networking: Application Load Balancer.
+
+Imágenes: Repositorios ECR.
+
+A continuación se detalla la estructura exacta del proyecto:
 
 ----------
 
