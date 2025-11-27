@@ -29,7 +29,7 @@
         "logDriver": "awslogs",
         "options": {
           "awslogs-group": "/ecs/dev-core-task",
-          "awslogs-region": "${AWS_REGION}",
+          "awslogs-region": "us-east-1",
           "awslogs-stream-prefix": "postgres"
         }
       }
@@ -51,7 +51,7 @@
         "logDriver": "awslogs",
         "options": {
           "awslogs-group": "/ecs/dev-core-task",
-          "awslogs-region": "${AWS_REGION}",
+          "awslogs-region": "us-east-1",
           "awslogs-stream-prefix": "db-init"
         }
       }
@@ -74,7 +74,7 @@
         "logDriver": "awslogs",
         "options": {
           "awslogs-group": "/ecs/dev-core-task",
-          "awslogs-region": "${AWS_REGION}",
+          "awslogs-region": "us-east-1",
           "awslogs-stream-prefix": "redis"
         }
       }
@@ -99,7 +99,7 @@
         "logDriver": "awslogs",
         "options": {
           "awslogs-group": "/ecs/dev-core-task",
-          "awslogs-region": "${AWS_REGION}",
+          "awslogs-region": "us-east-1",
           "awslogs-stream-prefix": "product"
         }
       }
@@ -124,7 +124,7 @@
         "logDriver": "awslogs",
         "options": {
           "awslogs-group": "/ecs/dev-core-task",
-          "awslogs-region": "${AWS_REGION}",
+          "awslogs-region": "us-east-1",
           "awslogs-stream-prefix": "inventory"
         }
       }
@@ -152,7 +152,7 @@
         "logDriver": "awslogs",
         "options": {
           "awslogs-group": "/ecs/dev-core-task",
-          "awslogs-region": "${AWS_REGION}",
+          "awslogs-region": "us-east-1",
           "awslogs-stream-prefix": "api-gateway"
         }
       }
