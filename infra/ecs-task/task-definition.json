@@ -38,8 +38,7 @@
         }
       }
     },
-
-    # NUEVO: CONTENEDOR PARA EJECUTAR ${INIT_SQL}
+    
     {
       "name": "db-init",
       "image": "postgres:15-alpine",
@@ -61,7 +60,6 @@
         }
       }
     },
-    # FIN DE LO NUEVO
 
     {
       "name": "redis",
