@@ -1,155 +1,184 @@
-{
-  "family": "dev-core-task",
-  "networkMode": "awsvpc",
-  "requiresCompatibilities": ["FARGATE"],
-  "cpu": "1024",
-  "memory": "4096",
-  "executionRoleArn": "arn:aws:iam::851725322802:role/LabRole",
-  "containerDefinitions": [
-    {
-      "name": "postgres",
-      "image": "postgres:15-alpine",
-      "essential": true,
-      "portMappings": [{ "containerPort": 5432, "hostPort": 5432, "protocol": "tcp" }],
-      "environment": [
-        { "name": "POSTGRES_USER", "value": "admin" },
-        { "name": "POSTGRES_PASSWORD", "value": "admin123" },
-        { "name": "POSTGRES_DB", "value": "microservices_db" }
-      ],
-      "healthCheck": {
-        "command": ["CMD-SHELL", "pg_isready -U admin -d microservices_db"],
-        "interval": 10,
-        "timeout": 5,
-        "retries": 5,
-        "startPeriod": 10
-      },
-      "logConfiguration": {
-        "logDriver": "awslogs",
-        "options": {
-          "awslogs-group": "/ecs/dev-core-task",
-          "awslogs-region": "us-east-1",
-          "awslogs-stream-prefix": "postgres"
-        }
-      }
-    },
-    {
-      "name": "db-init",
-      "image": "postgres:15-alpine",
-      "essential": false,
-      "dependsOn": [{ "containerName": "postgres", "condition": "HEALTHY" }],
-      "command": [
-        "sh",
-        "-c",
-        "until nslookup postgres; do echo 'Esperando DNS de postgres...'; sleep 1; done; until pg_isready -U admin -d microservices_db; do echo 'Esperando DB lista...'; sleep 1; done; echo \"${INIT_SQL}\" | psql postgresql://admin:admin123@postgres:5432/microservices_db && echo 'DB INIT DONE'"
-      ],
-      "logConfiguration": {
-        "logDriver": "awslogs",
-        "options": {
-          "awslogs-group": "/ecs/dev-core-task",
-          "awslogs-region": "us-east-1",
-          "awslogs-stream-prefix": "db-init"
-        }
-      }
-    },
-    {
-      "name": "redis",
-      "image": "redis:7-alpine",
-      "essential": true,
-      "portMappings": [{ "containerPort": 6379, "hostPort": 6379, "protocol": "tcp" }],
-      "healthCheck": {
-        "command": ["CMD", "redis-cli", "ping"],
-        "interval": 10,
-        "timeout": 3,
-        "retries": 5,
-        "startPeriod": 5
-      },
-      "logConfiguration": {
-        "logDriver": "awslogs",
-        "options": {
-          "awslogs-group": "/ecs/dev-core-task",
-          "awslogs-region": "us-east-1",
-          "awslogs-stream-prefix": "redis"
-        }
-      }
-    },
-    {
-      "name": "product",
-      "image": "${PRODUCT_IMAGE}",
-      "essential": true,
-      "portMappings": [{ "containerPort": 8001, "hostPort": 8001, "protocol": "tcp" }],
-      "environment": [
-        { "name": "DATABASE_URL", "value": "postgresql://admin:admin123@postgres:5432/microservices_db" },
-        { "name": "REDIS_URL", "value": "redis://redis:6379" }
-      ],
-      "dependsOn": [{ "containerName": "db-init", "condition": "SUCCESS" }],
-      "healthCheck": { "command": ["CMD-SHELL", "nc -z localhost 8001"], "interval": 10, "timeout": 5, "retries": 3, "startPeriod": 5 },
-      "entryPoint": [
-        "sh",
-        "-c",
-        "until nc -z postgres 5432 && nc -z redis 6379; do echo 'Esperando a DB/Redis...'; sleep 3; done; exec npm start"
-      ],
-      "logConfiguration": {
-        "logDriver": "awslogs",
-        "options": {
-          "awslogs-group": "/ecs/dev-core-task",
-          "awslogs-region": "us-east-1",
-          "awslogs-stream-prefix": "product"
-        }
-      }
-    },
-    {
-      "name": "inventory",
-      "image": "${INVENTORY_IMAGE}",
-      "essential": true,
-      "portMappings": [{ "containerPort": 8002, "hostPort": 8002, "protocol": "tcp" }],
-      "environment": [
-        { "name": "DATABASE_URL", "value": "postgres://admin:admin123@postgres:5432/microservices_db?sslmode=disable" },
-        { "name": "REDIS_URL", "value": "redis:6379" }
-      ],
-      "dependsOn": [{ "containerName": "db-init", "condition": "SUCCESS" }],
-      "healthCheck": { "command": ["CMD-SHELL", "nc -z localhost 8002"], "interval": 10, "timeout": 5, "retries": 3, "startPeriod": 5 },
-      "entryPoint": [
-        "sh",
-        "-c",
-        "until nc -z postgres 5432 && nc -z redis 6379; do echo 'Esperando a DB/Redis...'; sleep 3; done; exec npm start"
-      ],
-      "logConfiguration": {
-        "logDriver": "awslogs",
-        "options": {
-          "awslogs-group": "/ecs/dev-core-task",
-          "awslogs-region": "us-east-1",
-          "awslogs-stream-prefix": "inventory"
-        }
-      }
-    },
-    {
-      "name": "api-gateway",
-      "image": "${APIGATEWAY_IMAGE}",
-      "essential": true,
-      "portMappings": [{ "containerPort": 8000, "hostPort": 8000, "protocol": "tcp" }],
-      "environment": [
-        { "name": "PRODUCT_SERVICE_URL", "value": "http://product:8001" },
-        { "name": "INVENTORY_SERVICE_URL", "value": "http://inventory:8002" },
-        { "name": "REDIS_URL", "value": "redis:6379" }
-      ],
-      "dependsOn": [
-        { "containerName": "product", "condition": "HEALTHY" },
-        { "containerName": "inventory", "condition": "HEALTHY" }
-      ],
-      "healthCheck": { "command": ["CMD-SHELL", "nc -z localhost 8000"], "interval": 10, "timeout": 5, "retries": 3, "startPeriod": 5 },
-      "entryPoint": [
-        "sh",
-        "-c",
-        "until nc -z product 8001 && nc -z inventory 8002; do echo 'Esperando a Product/Inventory...'; sleep 3; done; exec npm start"
-      ],
-      "logConfiguration": {
-        "logDriver": "awslogs",
-        "options": {
-          "awslogs-group": "/ecs/dev-core-task",
-          "awslogs-region": "us-east-1",
-          "awslogs-stream-prefix": "apigateway"
-        }
-      }
-    }
-  ]
-}
+family: dev-core-task
+networkMode: awsvpc
+requiresCompatibilities:
+  - FARGATE
+cpu: '1024'
+memory: '4096'
+executionRoleArn: arn:aws:iam::851725322802:role/LabRole
+containerDefinitions:
+  - name: postgres
+    image: postgres:15-alpine
+    essential: true
+    portMappings:
+      - containerPort: 5432
+        hostPort: 5432
+        protocol: tcp
+    environment:
+      - name: POSTGRES_USER
+        value: admin
+      - name: POSTGRES_PASSWORD
+        value: admin123
+      - name: POSTGRES_DB
+        value: microservices_db
+    healthCheck:
+      command: ["CMD-SHELL", "pg_isready -U admin -d microservices_db"]
+      interval: 10
+      timeout: 5
+      retries: 5
+      startPeriod: 10
+    logConfiguration:
+      logDriver: awslogs
+      options:
+        awslogs-group: /ecs/dev-core-task
+        awslogs-region: us-east-1
+        awslogs-stream-prefix: postgres
+
+  - name: db-init
+    image: postgres:15-alpine
+    essential: false
+    dependsOn:
+      - containerName: postgres
+        condition: HEALTHY
+    command:
+      - sh
+      - -c
+      - |
+        until pg_isready -h postgres -U admin -d microservices_db; do
+          echo 'Esperando DB lista...'; sleep 2;
+        done;
+        echo "${INIT_SQL}" | psql postgresql://admin:admin123@postgres:5432/microservices_db && echo 'DB INIT DONE'
+    logConfiguration:
+      logDriver: awslogs
+      options:
+        awslogs-group: /ecs/dev-core-task
+        awslogs-region: us-east-1
+        awslogs-stream-prefix: db-init
+
+  - name: redis
+    image: redis:7-alpine
+    essential: true
+    portMappings:
+      - containerPort: 6379
+        hostPort: 6379
+        protocol: tcp
+    healthCheck:
+      command: ["CMD", "redis-cli", "ping"]
+      interval: 10
+      timeout: 3
+      retries: 5
+      startPeriod: 5
+    logConfiguration:
+      logDriver: awslogs
+      options:
+        awslogs-group: /ecs/dev-core-task
+        awslogs-region: us-east-1
+        awslogs-stream-prefix: redis
+
+  - name: product
+    image: ${PRODUCT_IMAGE}
+    essential: true
+    portMappings:
+      - containerPort: 8001
+        hostPort: 8001
+        protocol: tcp
+    environment:
+      - name: DATABASE_URL
+        value: postgresql://admin:admin123@postgres:5432/microservices_db
+      - name: REDIS_URL
+        value: redis://redis:6379
+    dependsOn:
+      - containerName: db-init
+        condition: SUCCESS
+    healthCheck:
+      command: ["CMD-SHELL", "nc -z localhost 8001"]
+      interval: 10
+      timeout: 5
+      retries: 3
+      startPeriod: 5
+    entryPoint:
+      - sh
+      - -c
+      - |
+        until nc -z postgres 5432 && nc -z redis 6379; do
+          echo 'Esperando a DB/Redis...'; sleep 3;
+        done; exec npm start
+    logConfiguration:
+      logDriver: awslogs
+      options:
+        awslogs-group: /ecs/dev-core-task
+        awslogs-region: us-east-1
+        awslogs-stream-prefix: product
+
+  - name: inventory
+    image: ${INVENTORY_IMAGE}
+    essential: true
+    portMappings:
+      - containerPort: 8002
+        hostPort: 8002
+        protocol: tcp
+    environment:
+      - name: DATABASE_URL
+        value: postgres://admin:admin123@postgres:5432/microservices_db?sslmode=disable
+      - name: REDIS_URL
+        value: redis:6379
+    dependsOn:
+      - containerName: db-init
+        condition: SUCCESS
+    healthCheck:
+      command: ["CMD-SHELL", "nc -z localhost 8002"]
+      interval: 10
+      timeout: 5
+      retries: 3
+      startPeriod: 5
+    entryPoint:
+      - sh
+      - -c
+      - |
+        until nc -z postgres 5432 && nc -z redis 6379; do
+          echo 'Esperando a DB/Redis...'; sleep 3;
+        done; exec npm start
+    logConfiguration:
+      logDriver: awslogs
+      options:
+        awslogs-group: /ecs/dev-core-task
+        awslogs-region: us-east-1
+        awslogs-stream-prefix: inventory
+
+  - name: api-gateway
+    image: ${APIGATEWAY_IMAGE}
+    essential: true
+    portMappings:
+      - containerPort: 8000
+        hostPort: 8000
+        protocol: tcp
+    environment:
+      - name: PRODUCT_SERVICE_URL
+        value: http://product:8001
+      - name: INVENTORY_SERVICE_URL
+        value: http://inventory:8002
+      - name: REDIS_URL
+        value: redis:6379
+    dependsOn:
+      - containerName: product
+        condition: HEALTHY
+      - containerName: inventory
+        condition: HEALTHY
+    healthCheck:
+      command: ["CMD-SHELL", "nc -z localhost 8000"]
+      interval: 10
+      timeout: 5
+      retries: 3
+      startPeriod: 5
+    entryPoint:
+      - sh
+      - -c
+      - |
+        until nc -z product 8001 && nc -z inventory 8002; do
+          echo 'Esperando a Product/Inventory...'; sleep 3;
+        done; exec npm start
+    logConfiguration:
+      logDriver: awslogs
+      options:
+        awslogs-group: /ecs/dev-core-task
+        awslogs-region: us-east-1
+        awslogs-stream-prefix: apigateway
