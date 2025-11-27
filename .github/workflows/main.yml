@@ -78,12 +78,34 @@ jobs:
           echo "PRODUCT_IMAGE=$PRODUCT_IMAGE" >> $GITHUB_ENV
           echo "INVENTORY_IMAGE=$INVENTORY_IMAGE" >> $GITHUB_ENV
 
+
+      #####################################################################
+      # NUEVO: Leer y escapar init.sql para el seeder
+      #####################################################################
+      - name: Convert init.sql to JSON safe single line
+        run: |
+          INIT_SQL=$(cat infra/database/init.sql \
+            | sed 's/\\c microservices_db;//g' \
+            | sed 's/\\/\\\\/g' \
+            | sed 's/"/\\"/g' \
+            | tr -d '\n')
+
+          echo "INIT_SQL=$INIT_SQL" >> $GITHUB_ENV
+
+
+
+      #####################################################################
+      # FIN DE LA PARTE NUEVA
+      #####################################################################
+
+
       - name: Generate updated TaskDefinition JSON
         run: |
           sed \
             -e "s|\${APIGATEWAY_IMAGE}|${{ env.API_IMAGE }}|g" \
             -e "s|\${PRODUCT_IMAGE}|${{ env.PRODUCT_IMAGE }}|g" \
             -e "s|\${INVENTORY_IMAGE}|${{ env.INVENTORY_IMAGE }}|g" \
+            -e "s|\${INIT_SQL}|${{ env.INIT_SQL }}|g" \
             infra/ecs-task/task-definition.json > final-task.json
 
       - name: Register new TaskDefinition in ECS
