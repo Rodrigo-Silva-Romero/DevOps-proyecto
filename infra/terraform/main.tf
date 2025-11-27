@@ -79,5 +79,4 @@ module "ecs_service_core" {
 # Lambda
 module "lambda" {
   source      = "./modules/lambda"
-  lambda_name = "lambdaLab"  # o var.lambda_name si querés parametrizar
 }
