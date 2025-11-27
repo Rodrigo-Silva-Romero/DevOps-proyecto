@@ -38,6 +38,35 @@
         }
       }
     },
+
+    #################################################################
+    # NUEVO: CONTENEDOR PARA EJECUTAR ${INIT_SQL}
+    #################################################################
+    {
+      "name": "db-init",
+      "image": "postgres:15-alpine",
+      "essential": false,
+      "dependsOn": [
+        { "containerName": "postgres", "condition": "HEALTHY" }
+      ],
+      "command": [
+        "sh",
+        "-c",
+        "echo \"${INIT_SQL}\" | psql postgresql://admin:admin123@postgres:5432/microservices_db && echo 'DB INIT DONE'"
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/dev-core-task",
+          "awslogs-region": "us-east-1",
+          "awslogs-stream-prefix": "db-init"
+        }
+      }
+    },
+    #################################################################
+    # FIN DE LO NUEVO
+    #################################################################
+
     {
       "name": "redis",
       "image": "redis:7-alpine",
@@ -65,6 +94,7 @@
         }
       }
     },
+
     {
       "name": "product",
       "image": "${PRODUCT_IMAGE}",
@@ -80,6 +110,9 @@
         { "name": "DATABASE_URL", "value": "postgresql://admin:admin123@postgres:5432/microservices_db" },
         { "name": "REDIS_URL", "value": "redis://redis:6379" }
       ],
+      "dependsOn": [
+        { "containerName": "db-init", "condition": "SUCCESS" }
+      ],
       "entryPoint": [
         "sh",
         "-c",
@@ -94,6 +127,7 @@
         }
       }
     },
+
     {
       "name": "inventory",
       "image": "${INVENTORY_IMAGE}",
@@ -109,6 +143,9 @@
         { "name": "DATABASE_URL", "value": "postgres://admin:admin123@postgres:5432/microservices_db?sslmode=disable" },
         { "name": "REDIS_URL", "value": "redis:6379" }
       ],
+      "dependsOn": [
+        { "containerName": "db-init", "condition": "SUCCESS" }
+      ],
       "entryPoint": [
         "sh",
         "-c",
@@ -123,6 +160,7 @@
         }
       }
     },
+
     {
       "name": "api-gateway",
       "image": "${APIGATEWAY_IMAGE}",
@@ -138,6 +176,10 @@
         { "name": "PRODUCT_SERVICE_URL", "value": "http://product:8001" },
         { "name": "INVENTORY_SERVICE_URL", "value": "http://inventory:8002" },
         { "name": "REDIS_URL", "value": "redis:6379" }
+      ],
+      "dependsOn": [
+        { "containerName": "product", "condition": "HEALTHY" },
+        { "containerName": "inventory", "condition": "HEALTHY" }
       ],
       "entryPoint": [
         "sh",
