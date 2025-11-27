@@ -93,7 +93,7 @@
       ],
       "dependsOn": [
         { "containerName": "postgres", "condition": "HEALTHY" },
-        { "containerName": "redis", "condition": "HEALTHY" }
+        { "containerName": "REDIS_URL", "condition": "HEALTHY" }
       ],
       "logConfiguration": {
         "logDriver": "awslogs",
