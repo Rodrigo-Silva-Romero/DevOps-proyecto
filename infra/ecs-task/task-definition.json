@@ -10,9 +10,7 @@
       "name": "postgres",
       "image": "postgres:15-alpine",
       "essential": true,
-      "portMappings": [
-        { "containerPort": 5432, "hostPort": 5432, "protocol": "tcp" }
-      ],
+      "portMappings": [{ "containerPort": 5432, "hostPort": 5432, "protocol": "tcp" }],
       "environment": [
         { "name": "POSTGRES_USER", "value": "admin" },
         { "name": "POSTGRES_PASSWORD", "value": "admin123" },
@@ -34,18 +32,15 @@
         }
       }
     },
-
     {
       "name": "db-init",
       "image": "postgres:15-alpine",
       "essential": false,
-      "dependsOn": [
-        { "containerName": "postgres", "condition": "HEALTHY" }
-      ],
+      "dependsOn": [{ "containerName": "postgres", "condition": "HEALTHY" }],
       "command": [
         "sh",
         "-c",
-        "echo \"${INIT_SQL}\" | psql postgresql://admin:admin123@postgres:5432/microservices_db && echo 'DB INIT DONE'"
+        "until nslookup postgres; do echo 'Esperando DNS de postgres...'; sleep 1; done; until pg_isready -U admin -d microservices_db; do echo 'Esperando DB lista...'; sleep 1; done; echo \"${INIT_SQL}\" | psql postgresql://admin:admin123@postgres:5432/microservices_db && echo 'DB INIT DONE'"
       ],
       "logConfiguration": {
         "logDriver": "awslogs",
@@ -56,14 +51,11 @@
         }
       }
     },
-
     {
       "name": "redis",
       "image": "redis:7-alpine",
       "essential": true,
-      "portMappings": [
-        { "containerPort": 6379, "hostPort": 6379, "protocol": "tcp" }
-      ],
+      "portMappings": [{ "containerPort": 6379, "hostPort": 6379, "protocol": "tcp" }],
       "healthCheck": {
         "command": ["CMD", "redis-cli", "ping"],
         "interval": 10,
@@ -80,28 +72,17 @@
         }
       }
     },
-
     {
       "name": "product",
       "image": "${PRODUCT_IMAGE}",
       "essential": true,
-      "portMappings": [
-        { "containerPort": 8001, "hostPort": 8001, "protocol": "tcp" }
-      ],
+      "portMappings": [{ "containerPort": 8001, "hostPort": 8001, "protocol": "tcp" }],
       "environment": [
         { "name": "DATABASE_URL", "value": "postgresql://admin:admin123@postgres:5432/microservices_db" },
         { "name": "REDIS_URL", "value": "redis://redis:6379" }
       ],
-      "dependsOn": [
-        { "containerName": "db-init", "condition": "SUCCESS" }
-      ],
-      "healthCheck": {
-        "command": ["CMD-SHELL", "nc -z localhost 8001"],
-        "interval": 10,
-        "timeout": 5,
-        "retries": 3,
-        "startPeriod": 5
-      },
+      "dependsOn": [{ "containerName": "db-init", "condition": "SUCCESS" }],
+      "healthCheck": { "command": ["CMD-SHELL", "nc -z localhost 8001"], "interval": 10, "timeout": 5, "retries": 3, "startPeriod": 5 },
       "entryPoint": [
         "sh",
         "-c",
@@ -116,28 +97,17 @@
         }
       }
     },
-
     {
       "name": "inventory",
       "image": "${INVENTORY_IMAGE}",
       "essential": true,
-      "portMappings": [
-        { "containerPort": 8002, "hostPort": 8002, "protocol": "tcp" }
-      ],
+      "portMappings": [{ "containerPort": 8002, "hostPort": 8002, "protocol": "tcp" }],
       "environment": [
         { "name": "DATABASE_URL", "value": "postgres://admin:admin123@postgres:5432/microservices_db?sslmode=disable" },
         { "name": "REDIS_URL", "value": "redis:6379" }
       ],
-      "dependsOn": [
-        { "containerName": "db-init", "condition": "SUCCESS" }
-      ],
-      "healthCheck": {
-        "command": ["CMD-SHELL", "nc -z localhost 8002"],
-        "interval": 10,
-        "timeout": 5,
-        "retries": 3,
-        "startPeriod": 5
-      },
+      "dependsOn": [{ "containerName": "db-init", "condition": "SUCCESS" }],
+      "healthCheck": { "command": ["CMD-SHELL", "nc -z localhost 8002"], "interval": 10, "timeout": 5, "retries": 3, "startPeriod": 5 },
       "entryPoint": [
         "sh",
         "-c",
@@ -152,14 +122,11 @@
         }
       }
     },
-
     {
       "name": "api-gateway",
       "image": "${APIGATEWAY_IMAGE}",
       "essential": true,
-      "portMappings": [
-        { "containerPort": 8000, "hostPort": 8000, "protocol": "tcp" }
-      ],
+      "portMappings": [{ "containerPort": 8000, "hostPort": 8000, "protocol": "tcp" }],
       "environment": [
         { "name": "PRODUCT_SERVICE_URL", "value": "http://product:8001" },
         { "name": "INVENTORY_SERVICE_URL", "value": "http://inventory:8002" },
@@ -169,13 +136,7 @@
         { "containerName": "product", "condition": "HEALTHY" },
         { "containerName": "inventory", "condition": "HEALTHY" }
       ],
-      "healthCheck": {
-        "command": ["CMD-SHELL", "nc -z localhost 8000"],
-        "interval": 10,
-        "timeout": 5,
-        "retries": 3,
-        "startPeriod": 5
-      },
+      "healthCheck": { "command": ["CMD-SHELL", "nc -z localhost 8000"], "interval": 10, "timeout": 5, "retries": 3, "startPeriod": 5 },
       "entryPoint": [
         "sh",
         "-c",
