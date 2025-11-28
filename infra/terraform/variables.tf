@@ -32,6 +32,16 @@ variable "ecr_repositories" {
   }
 }
 
+variable "sender_email" {
+  description = "Email del remitente"
+  type        = string
+}
+
+variable "app_password" {
+  description = "App password del Gmail para SMTP"
+  type        = string
+}
+
 variable "apigateway_port" {
   type = number
   description = "Puerto que expone el API Gateway"
