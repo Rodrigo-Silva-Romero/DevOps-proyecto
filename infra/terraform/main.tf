@@ -78,5 +78,7 @@ module "ecs_service_core" {
 
 # Lambda
 module "lambda" {
-  source      = "./modules/lambda"
+  source        = "./modules/lambda"
+  sender_email  = var.sender_email
+  app_password  = var.app_password
 }
