@@ -15,11 +15,16 @@ resource "aws_lambda_function" "handler" {
   function_name = var.lambda_name
   role          = data.aws_iam_role.lab_role.arn
 
-  # handler.py + función lambda_handler = handler.lambda_handler
   handler = "handler.lambda_handler"
-
   runtime = "python3.11"
   timeout = 10
+
+  environment {
+    variables = {
+      SENDER_EMAIL = var.sender_email
+      APP_PASSWORD = var.app_password
+    }
+  }
 }
 
 resource "aws_lambda_function_url" "handler_url" {
