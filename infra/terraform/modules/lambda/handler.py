@@ -4,7 +4,7 @@ import os
 def lambda_handler(event, context):
     sender = os.environ["SENDER_EMAIL"]        # tu Gmail
     app_password = os.environ["APP_PASSWORD"]  # contraseña de app
-    receiver = "fernandopunales@gmail.com"     # destinatario final
+    receiver = "rodrigosilvaromero14@gmail.com"     # destinatario final
 
     subject = "🚀 Infra desplegada correctamente"
     body = "La infraestructura se levantó correctamente con el pipeline."
