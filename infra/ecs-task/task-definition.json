@@ -1,4 +1,5 @@
-"family": "dev-core-task",
+{
+  "family": "dev-core-task",
   "networkMode": "awsvpc",
   "requiresCompatibilities": ["FARGATE"],
   "cpu": "1024",
