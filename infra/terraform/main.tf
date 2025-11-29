@@ -87,9 +87,9 @@ module "observability" {
   source = "./modules/observability"
 
   repository_names = {
-    apigateway = module.ecr.ecr_urls["apigateway"]
-    product    = module.ecr.ecr_urls["product"]
-    inventory  = module.ecr.ecr_urls["inventory"]
+    apigateway = var.ecr_repositories["apigateway"]
+    product    = var.ecr_repositories["product"]
+    inventory  = var.ecr_repositories["inventory"]
   }
 
   environment   = var.environment
