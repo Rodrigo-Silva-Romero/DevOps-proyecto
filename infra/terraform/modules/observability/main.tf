@@ -1,4 +1,3 @@
-# Dashboard ECS
 resource "aws_cloudwatch_dashboard" "ecs_dashboard" {
   dashboard_name = "${var.environment}-ecs-dashboard"
 
@@ -12,13 +11,13 @@ resource "aws_cloudwatch_dashboard" "ecs_dashboard" {
         height = 6
         properties = {
           metrics = [
-            [ "AWS/ECS", "CPUUtilization", "ClusterName", var.cluster_name, "ServiceName", var.service_name ],
-            [ ".", "MemoryUtilization", ".", ".", ".", "." ]
+            [ "AWS/ECS", "RunningTaskCount", "ClusterName", var.cluster_name, "ServiceName", var.service_name ],
+            [ ".", "PendingTaskCount", ".", ".", ".", "." ]
           ]
           period = 300
           stat   = "Average"
           region = var.aws_region
-          title  = "ECS CPU / Memory Utilization"
+          title  = "ECS Tasks Running / Pending"
         }
       },
       {
@@ -29,30 +28,29 @@ resource "aws_cloudwatch_dashboard" "ecs_dashboard" {
         height = 6
         properties = {
           metrics = [
-            [ "AWS/ECS", "RunningTaskCount", "ClusterName", var.cluster_name, "ServiceName", var.service_name ],
-            [ ".", "PendingTaskCount", ".", ".", ".", "." ]
+            [ "AWS/ECS", "CPUUtilization", "ClusterName", var.cluster_name, "ServiceName", var.service_name ],
+            [ ".", "MemoryUtilization", ".", ".", ".", "." ]
           ]
           period = 300
-          stat   = "Sum"
+          stat   = "Average"
           region = var.aws_region
-          title  = "ECS Tasks Running / Pending"
+          title  = "ECS CPU / Memory Utilization"
         }
       }
     ]
   })
 }
 
-# Alarm CPU alta
-resource "aws_cloudwatch_metric_alarm" "ecs_cpu_high" {
-  alarm_name          = "${var.environment}-ecs-cpu-high"
-  comparison_operator = "GreaterThanThreshold"
+# Alarm si no hay tareas corriendo
+resource "aws_cloudwatch_metric_alarm" "ecs_no_running" {
+  alarm_name          = "${var.environment}-ecs-no-running-tasks"
+  comparison_operator = "LessThanThreshold"
   evaluation_periods  = 1
-  metric_name         = "CPUUtilization"
+  metric_name         = "RunningTaskCount"
   namespace           = "AWS/ECS"
   period              = 300
   statistic           = "Average"
-  threshold           = 80
-  alarm_description   = "Alert when ECS CPU > 80%"
+  threshold           = 1
   dimensions = {
     ClusterName = var.cluster_name
     ServiceName = var.service_name
@@ -60,17 +58,16 @@ resource "aws_cloudwatch_metric_alarm" "ecs_cpu_high" {
   alarm_actions = var.sns_topic_arn != "" ? [var.sns_topic_arn] : []
 }
 
-# Alarm Memory alta
-resource "aws_cloudwatch_metric_alarm" "ecs_mem_high" {
-  alarm_name          = "${var.environment}-ecs-mem-high"
+# Alarm si tareas pendientes se mantienen
+resource "aws_cloudwatch_metric_alarm" "ecs_pending_high" {
+  alarm_name          = "${var.environment}-ecs-pending-high"
   comparison_operator = "GreaterThanThreshold"
   evaluation_periods  = 1
-  metric_name         = "MemoryUtilization"
+  metric_name         = "PendingTaskCount"
   namespace           = "AWS/ECS"
   period              = 300
   statistic           = "Average"
-  threshold           = 80
-  alarm_description   = "Alert when ECS Memory > 80%"
+  threshold           = 0
   dimensions = {
     ClusterName = var.cluster_name
     ServiceName = var.service_name
