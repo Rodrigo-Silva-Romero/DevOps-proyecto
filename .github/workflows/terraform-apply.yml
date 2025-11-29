@@ -47,25 +47,28 @@ jobs:
         working-directory: infra/terraform
         run: terraform apply -auto-approve tfplan
 
-      - name: Exportar ECR URLs a secretos de GitHub
+      - name: Obtener ECR URLs
+        id: get-ecr-urls
         working-directory: infra/terraform
         run: |
-          echo "Obteniendo outputs individuales (limpio con grep)..."
+          echo "== Obteniendo URLs de ECR =="
+          API=$(terraform output -raw ecr_api_url)
+          PRODUCT=$(terraform output -raw ecr_product_url)
+          INVENTORY=$(terraform output -raw ecr_inventory_url)
 
-          API=$(terraform output ecr_api_url | grep -oE "[0-9]+\.dkr\.ecr\.[^ ]+")
-          PRODUCT=$(terraform output ecr_product_url | grep -oE "[0-9]+\.dkr\.ecr\.[^ ]+")
-          INVENTORY=$(terraform output ecr_inventory_url | grep -oE "[0-9]+\.dkr\.ecr\.[^ ]+")
+          echo "API: $API"
+          echo "PRODUCT: $PRODUCT"
+          echo "INVENTORY: $INVENTORY"
 
-          echo "=== DEBUG CLEAN ==="
-          echo "API: '$API'"
-          echo "PRODUCT: '$PRODUCT'"
-          echo "INVENTORY: '$INVENTORY'"
-          echo "==================="
+          echo "ecr_api_url=$API" >> $GITHUB_OUTPUT
+          echo "ecr_product_url=$PRODUCT" >> $GITHUB_OUTPUT
+          echo "ecr_inventory_url=$INVENTORY" >> $GITHUB_OUTPUT
 
-          echo "Actualizando secretos de GitHub..."
-          gh secret set ECR_API_URL       --body "$API"
-          gh secret set ECR_PRODUCT_URL   --body "$PRODUCT"
-          gh secret set ECR_INVENTORY_URL --body "$INVENTORY"
+      - name: Actualizar secretos de GitHub
+        run: |
+          gh secret set ECR_API_URL       --body "${{ steps.get-ecr-urls.outputs.ecr_api_url }}"
+          gh secret set ECR_PRODUCT_URL   --body "${{ steps.get-ecr-urls.outputs.ecr_product_url }}"
+          gh secret set ECR_INVENTORY_URL --body "${{ steps.get-ecr-urls.outputs.ecr_inventory_url }}"
         env:
           GH_TOKEN: ${{ secrets.REPO_ADMIN_PAT }}
 
@@ -85,5 +88,5 @@ jobs:
 
       - name: Ejecutar Lambda vía curl
         run: |
-          echo "Invocando Lambda en $LAMBDA_URL"
-          curl -X POST ${{ steps.get-lambda-url.outputs.lambda_url}}
+          echo "Invocando Lambda en ${{ steps.get-lambda-url.outputs.lambda_url }}"
+          curl -X POST ${{ steps.get-lambda-url.outputs.lambda_url }}
