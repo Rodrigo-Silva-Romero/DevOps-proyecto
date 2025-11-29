@@ -82,3 +82,13 @@ module "lambda" {
   sender_email  = var.sender_email
   app_password  = var.app_password
 }
+
+#Observabilidad
+module "observability" {
+  source        = "./modules/observability"
+  vpc_id        = module.vpc.vpc_id
+  subnet_ids    = module.vpc.public_subnet_ids
+  environment   = var.environment
+  aws_region    = var.aws_region
+  sns_topic_arn = "" # opcional, dejar vacío si no querés notificaciones
+}

@@ -44,3 +44,17 @@ output "ecr_inventory_url" {
 output "lambda_url" {
   value = module.lambda.lambda_url
 }
+
+
+output "vpc_dashboard_arn" {
+  value       = module.observability.dashboard_arn
+  description = "CloudWatch dashboard ARN"
+}
+
+output "network_in_zero_alarm_arn" {
+  value       = module.observability.network_in_zero_alarm_arn
+}
+
+output "network_out_high_alarm_arn" {
+  value       = module.observability.network_out_high_alarm_arn
+}
