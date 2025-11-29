@@ -1,5 +1,5 @@
-resource "aws_cloudwatch_dashboard" "ecs_dashboard" {
-  dashboard_name = "${var.environment}-ecs-dashboard"
+resource "aws_cloudwatch_dashboard" "ecr_dashboard" {
+  dashboard_name = "${var.environment}-ecr-dashboard"
 
   dashboard_body = jsonencode({
     widgets = [
@@ -11,13 +11,12 @@ resource "aws_cloudwatch_dashboard" "ecs_dashboard" {
         height = 6
         properties = {
           metrics = [
-            [ "AWS/ECS", "RunningTaskCount", "ClusterName", var.cluster_name, "ServiceName", var.service_name ],
-            [ ".", "PendingTaskCount", ".", ".", ".", "." ]
+            [ "AWS/ECR", "ImageCount", "RepositoryName", var.repository_name ]
           ]
           period = 300
-          stat   = "Average"
+          stat   = "Maximum"
           region = var.aws_region
-          title  = "ECS Tasks Running / Pending"
+          title  = "ECR Image Count"
         }
       },
       {
@@ -28,49 +27,46 @@ resource "aws_cloudwatch_dashboard" "ecs_dashboard" {
         height = 6
         properties = {
           metrics = [
-            [ "AWS/ECS", "CPUUtilization", "ClusterName", var.cluster_name, "ServiceName", var.service_name ],
-            [ ".", "MemoryUtilization", ".", ".", ".", "." ]
+            [ "AWS/ECR", "RepositorySizeBytes", "RepositoryName", var.repository_name ]
           ]
           period = 300
-          stat   = "Average"
+          stat   = "Maximum"
           region = var.aws_region
-          title  = "ECS CPU / Memory Utilization"
+          title  = "ECR Repository Size (Bytes)"
         }
       }
     ]
   })
 }
 
-# Alarm si no hay tareas corriendo
-resource "aws_cloudwatch_metric_alarm" "ecs_no_running" {
-  alarm_name          = "${var.environment}-ecs-no-running-tasks"
-  comparison_operator = "LessThanThreshold"
+# Alarm: Si hay vulnerabilidades en la última imagen escaneada
+resource "aws_cloudwatch_metric_alarm" "ecr_vuln_alarm" {
+  alarm_name          = "${var.environment}-ecr-vulnerabilities"
+  comparison_operator = "GreaterThanThreshold"
   evaluation_periods  = 1
-  metric_name         = "RunningTaskCount"
-  namespace           = "AWS/ECS"
+  metric_name         = "ImageScanFindingsCount"
+  namespace           = "AWS/ECR"
   period              = 300
-  statistic           = "Average"
-  threshold           = 1
+  statistic           = "Maximum"
+  threshold           = 0
   dimensions = {
-    ClusterName = var.cluster_name
-    ServiceName = var.service_name
+    RepositoryName = var.repository_name
   }
   alarm_actions = var.sns_topic_arn != "" ? [var.sns_topic_arn] : []
 }
 
-# Alarm si tareas pendientes se mantienen
-resource "aws_cloudwatch_metric_alarm" "ecs_pending_high" {
-  alarm_name          = "${var.environment}-ecs-pending-high"
+# Alarm: Si el tamaño del repositorio supera cierto límite (ejemplo: 5 GB)
+resource "aws_cloudwatch_metric_alarm" "ecr_size_alarm" {
+  alarm_name          = "${var.environment}-ecr-size-high"
   comparison_operator = "GreaterThanThreshold"
   evaluation_periods  = 1
-  metric_name         = "PendingTaskCount"
-  namespace           = "AWS/ECS"
+  metric_name         = "RepositorySizeBytes"
+  namespace           = "AWS/ECR"
   period              = 300
-  statistic           = "Average"
-  threshold           = 0
+  statistic           = "Maximum"
+  threshold           = 5 * 1024 * 1024 * 1024
   dimensions = {
-    ClusterName = var.cluster_name
-    ServiceName = var.service_name
+    RepositoryName = var.repository_name
   }
   alarm_actions = var.sns_topic_arn != "" ? [var.sns_topic_arn] : []
 }
