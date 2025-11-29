@@ -1,20 +1,20 @@
 variable "repository_names" {
-  description = "Lista de nombres de repositorios ECR a monitorear"
-  type        = list(string)
+  type        = map(string)
+  description = "Mapa de repositorios ECR a monitorear. Key = nombre lógico, value = URL del repositorio"
 }
 
 variable "environment" {
-  description = "Environment name"
   type        = string
+  description = "Nombre del ambiente"
 }
 
 variable "aws_region" {
-  description = "AWS region"
   type        = string
+  description = "Región AWS"
 }
 
 variable "sns_topic_arn" {
-  description = "SNS Topic ARN for alarm notifications"
   type        = string
   default     = ""
+  description = "ARN del topic SNS para alarmas"
 }
