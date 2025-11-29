@@ -84,10 +84,16 @@ module "lambda" {
 }
 
 module "observability" {
-  source           = "./modules/observability"
-  repository_names = values(module.ecr.ecr_urls) # toma los nombres de los repositorios creados
-  environment      = var.environment
-  aws_region       = var.aws_region
-  sns_topic_arn    = "" # opcional
+  source = "./modules/observability"
+
+  repository_names = {
+    apigateway = module.ecr.ecr_urls["apigateway"]
+    product    = module.ecr.ecr_urls["product"]
+    inventory  = module.ecr.ecr_urls["inventory"]
+  }
+
+  environment   = var.environment
+  aws_region    = var.aws_region
+  sns_topic_arn = "" # opcional
 }
 
