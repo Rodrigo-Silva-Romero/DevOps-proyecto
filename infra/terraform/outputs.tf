@@ -56,8 +56,3 @@ output "ecr_vuln_alarm_arns" {
 output "ecr_size_alarm_arns" {
   value = module.observability.ecr_size_alarm_arns
 }
-
-output "ecs_pending_high_alarm_arn" {
-  value       = module.observability.ecs_pending_high_alarm_arn
-  description = "ARN de la alarma ECS pending high tasks"
-}
