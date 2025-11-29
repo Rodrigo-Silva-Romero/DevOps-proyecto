@@ -46,15 +46,15 @@ output "lambda_url" {
 }
 
 output "ecr_dashboard_name" {
-  value = module.observability_ecr.ecr_dashboard_name
+  value = module.observability.ecr_dashboard_name
 }
 
 output "ecr_vuln_alarm_arns" {
-  value = module.observability_ecr.ecr_vuln_alarm_arns
+  value = module.observability.ecr_vuln_alarm_arns
 }
 
 output "ecr_size_alarm_arns" {
-  value = module.observability_ecr.ecr_size_alarm_arns
+  value = module.observability.ecr_size_alarm_arns
 }
 
 output "ecs_pending_high_alarm_arn" {
