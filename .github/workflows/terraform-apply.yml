@@ -39,9 +39,9 @@ jobs:
         working-directory: infra/terraform
         run: terraform init -input=false
 
-- name: Terraform Plan
-  working-directory: infra/terraform
-  run: terraform plan -var-file="dev.tfvars" -var="sender_email=${{ secrets.SENDER_EMAIL }}" -var="app_password=${{ secrets.APP_PASSWORD }}" -out=tfplan
+      - name: Terraform Plan
+        working-directory: infra/terraform
+        run: terraform plan -var-file="dev.tfvars" -var="sender_email=${{ secrets.SENDER_EMAIL }}" -var="app_password=${{ secrets.APP_PASSWORD }}" -out=tfplan
 
       - name: Terraform Apply
         working-directory: infra/terraform
