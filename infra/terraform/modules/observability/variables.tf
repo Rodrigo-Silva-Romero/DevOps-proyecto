@@ -1,6 +1,6 @@
 variable "repository_names" {
   type        = map(string)
-  description = "Mapa de repositorios ECR a monitorear. Key = nombre lógico, value = URL del repositorio"
+  description = "Mapa de repositorios ECR a monitorear. Key = nombre lógico, value = nombre del repositorio"
 }
 
 variable "environment" {
