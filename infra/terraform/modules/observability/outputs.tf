@@ -1,14 +1,14 @@
-output "dashboard_name" {
+output "ecr_dashboard_name" {
   value       = aws_cloudwatch_dashboard.ecr_dashboard.dashboard_name
-  description = "Nombre del CloudWatch dashboard ECR"
+  description = "Nombre del CloudWatch dashboard para ECR"
 }
 
-output "ecr_vuln_alarm_arn" {
-  value       = aws_cloudwatch_metric_alarm.ecr_vuln_alarm.arn
-  description = "ARN de la alarma de vulnerabilidades ECR"
+output "ecr_vuln_alarm_arns" {
+  value       = [for a in aws_cloudwatch_metric_alarm.ecr_vuln_alarm : a.arn]
+  description = "ARNs de alarmas de vulnerabilidades ECR"
 }
 
-output "ecr_size_alarm_arn" {
-  value       = aws_cloudwatch_metric_alarm.ecr_size_alarm.arn
-  description = "ARN de la alarma de tamaño alto del repositorio"
+output "ecr_size_alarm_arns" {
+  value       = [for a in aws_cloudwatch_metric_alarm.ecr_size_alarm : a.arn]
+  description = "ARNs de alarmas de tamaño de repositorios ECR"
 }
