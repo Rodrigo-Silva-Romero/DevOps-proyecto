@@ -51,10 +51,12 @@ output "ecs_dashboard_name" {
   description = "Nombre del CloudWatch dashboard ECS"
 }
 
-output "ecs_cpu_high_alarm_arn" {
-  value       = module.observability.ecs_cpu_high_alarm_arn
+output "ecs_no_running_alarm_arn" {
+  value       = module.observability.ecs_no_running_alarm_arn
+  description = "ARN de la alarma ECS no running tasks"
 }
 
-output "ecs_mem_high_alarm_arn" {
-  value       = module.observability.ecs_mem_high_alarm_arn
+output "ecs_pending_high_alarm_arn" {
+  value       = module.observability.ecs_pending_high_alarm_arn
+  description = "ARN de la alarma ECS pending high tasks"
 }
