@@ -24,3 +24,13 @@ variable "aws_region" {
   type        = string
 }
 
+variable "cluster_name" {
+  description = "ECS Cluster name"
+  type        = string
+}
+
+variable "service_name" {
+  description = "ECS Service name"
+  type        = string
+}
+
