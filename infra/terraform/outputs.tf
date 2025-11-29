@@ -46,9 +46,9 @@ output "lambda_url" {
 }
 
 
-output "vpc_dashboard_arn" {
-  value       = module.observability.dashboard_arn
-  description = "CloudWatch dashboard ARN"
+output "vpc_dashboard_name" {
+  value       = module.observability.dashboard_name
+  description = "Nombre del CloudWatch dashboard"
 }
 
 output "network_in_zero_alarm_arn" {
