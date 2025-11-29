@@ -86,9 +86,10 @@ module "lambda" {
 #Observabilidad
 module "observability" {
   source        = "./modules/observability"
-  vpc_id        = module.vpc.vpc_id
-  subnet_ids    = module.vpc.public_subnet_ids
+  cluster_name  = module.ecs_cluster.cluster_id
+  service_name  = module.ecs_service_core.service_names
   environment   = var.environment
   aws_region    = var.aws_region
-  sns_topic_arn = "" # opcional, dejar vacío si no querés notificaciones
+  sns_topic_arn = "" # opcional
 }
+
