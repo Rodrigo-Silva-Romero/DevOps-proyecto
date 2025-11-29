@@ -4,7 +4,7 @@ resource "aws_cloudwatch_dashboard" "ecr_dashboard" {
 
   dashboard_body = jsonencode({
     widgets = flatten([
-      for repo_key, repo_url in var.repository_names : [
+      for repo_key, repo_name in var.repository_names : [
         {
           type  = "metric"
           x     = 0
@@ -13,12 +13,12 @@ resource "aws_cloudwatch_dashboard" "ecr_dashboard" {
           height = 6
           properties = {
             metrics = [
-              [ "AWS/ECR", "ImageCount", "RepositoryName", repo_key ]
+              [ "AWS/ECR", "ImageCount", "RepositoryName", repo_name ]
             ]
             period = 300
             stat   = "Maximum"
             region = var.aws_region
-            title  = "ECR Image Count - ${repo_key}"
+            title  = "ECR Image Count - ${repo_name}"
           }
         },
         {
@@ -29,12 +29,12 @@ resource "aws_cloudwatch_dashboard" "ecr_dashboard" {
           height = 6
           properties = {
             metrics = [
-              [ "AWS/ECR", "RepositorySizeBytes", "RepositoryName", repo_key ]
+              [ "AWS/ECR", "RepositorySizeBytes", "RepositoryName", repo_name ]
             ]
             period = 300
             stat   = "Maximum"
             region = var.aws_region
-            title  = "ECR Repository Size - ${repo_key}"
+            title  = "ECR Repository Size - ${repo_name}"
           }
         }
       ]
@@ -77,3 +77,4 @@ resource "aws_cloudwatch_metric_alarm" "ecr_size_alarm" {
   }
   alarm_actions = var.sns_topic_arn != "" ? [var.sns_topic_arn] : []
 }
+
