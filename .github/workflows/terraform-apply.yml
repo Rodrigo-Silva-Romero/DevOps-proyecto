@@ -33,7 +33,7 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
-          aws-region: ${{ secrets.AWS_REGION }}
+          aws-region: "us-east-1"
 
       - name: Terraform Init
         working-directory: infra/terraform
@@ -70,13 +70,20 @@ jobs:
           GH_TOKEN: ${{ secrets.REPO_ADMIN_PAT }}
 
       - name: Obtener URL de la Lambda
+        id: get-lambda-url
         working-directory: infra/terraform
         run: |
-          terraform output -raw lambda_url > lambda_url.txt
-          URL=$(cat lambda_url.txt | tr -d '[:space:]')
-          printf "LAMBDA_URL=%s\n" "$URL" >> $GITHUB_ENV
+          echo "== Obteniendo URL del lambda =="
+          LAMBDA_URL=$(terraform output -raw lambda_url)
+          echo "URL obtenida: $LAMBDA_URL"
+          echo "lambda_url=$LAMBDA_URL" >> $GITHUB_OUTPUT
+          echo "==========="
+
+      - name: Verificar URL
+        run: |
+          echo "La URL de la lambda es: ${{ steps.get-lambda-url.outputs.lambda_url}}"
 
       - name: Ejecutar Lambda vía curl
         run: |
           echo "Invocando Lambda en $LAMBDA_URL"
-          curl -X POST "$LAMBDA_URL"
+          curl -X POST ${{ steps.get-lambda-url.outputs.lambda_url}}
