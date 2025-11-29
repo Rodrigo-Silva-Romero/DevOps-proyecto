@@ -7,7 +7,7 @@ def lambda_handler(event, context):
     receiver = "rodrigosilvaromero14@gmail.com"     # destinatario final
 
     subject = "Infra desplegada correctamente"
-    body = "La infraestructura se levantó correctamente con el pipeline."
+    body = "La infraestructura se levanto correctamente con el pipeline."
 
     message = f"Subject: {subject}\n\n{body}"
 
