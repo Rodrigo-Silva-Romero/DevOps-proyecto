@@ -1,6 +1,6 @@
-# CloudWatch Dashboard
-resource "aws_cloudwatch_dashboard" "vpc_dashboard" {
-  dashboard_name = "${var.environment}-vpc-dashboard"
+# Dashboard ECS
+resource "aws_cloudwatch_dashboard" "ecs_dashboard" {
+  dashboard_name = "${var.environment}-ecs-dashboard"
 
   dashboard_body = jsonencode({
     widgets = [
@@ -12,13 +12,13 @@ resource "aws_cloudwatch_dashboard" "vpc_dashboard" {
         height = 6
         properties = {
           metrics = [
-            [ "AWS/NetworkInterface", "NetworkPacketsIn", "VpcId", var.vpc_id ],
-            [ ".", "NetworkPacketsOut", ".", "." ]
+            [ "AWS/ECS", "CPUUtilization", "ClusterName", var.cluster_name, "ServiceName", var.service_name ],
+            [ ".", "MemoryUtilization", ".", ".", ".", "." ]
           ]
           period = 300
-          stat   = "Sum"
+          stat   = "Average"
           region = var.aws_region
-          title  = "Network Packets In/Out VPC"
+          title  = "ECS CPU / Memory Utilization"
         }
       },
       {
@@ -29,49 +29,51 @@ resource "aws_cloudwatch_dashboard" "vpc_dashboard" {
         height = 6
         properties = {
           metrics = [
-            [ "AWS/NetworkInterface", "NetworkBytesIn", "VpcId", var.vpc_id ],
-            [ ".", "NetworkBytesOut", ".", "." ]
+            [ "AWS/ECS", "RunningTaskCount", "ClusterName", var.cluster_name, "ServiceName", var.service_name ],
+            [ ".", "PendingTaskCount", ".", ".", ".", "." ]
           ]
           period = 300
           stat   = "Sum"
           region = var.aws_region
-          title  = "Network Bytes In/Out VPC"
+          title  = "ECS Tasks Running / Pending"
         }
       }
     ]
   })
 }
 
-# Alarm: tráfico entrante cero en 5 minutos
-resource "aws_cloudwatch_metric_alarm" "network_in_zero" {
-  alarm_name          = "${var.environment}-network-in-zero"
-  comparison_operator = "LessThanOrEqualToThreshold"
+# Alarm CPU alta
+resource "aws_cloudwatch_metric_alarm" "ecs_cpu_high" {
+  alarm_name          = "${var.environment}-ecs-cpu-high"
+  comparison_operator = "GreaterThanThreshold"
   evaluation_periods  = 1
-  metric_name         = "NetworkBytesIn"
-  namespace           = "AWS/NetworkInterface"
+  metric_name         = "CPUUtilization"
+  namespace           = "AWS/ECS"
   period              = 300
-  statistic           = "Sum"
-  threshold           = 1
-  alarm_description   = "Alert when VPC receives almost no traffic"
+  statistic           = "Average"
+  threshold           = 80
+  alarm_description   = "Alert when ECS CPU > 80%"
   dimensions = {
-    VpcId = var.vpc_id
+    ClusterName = var.cluster_name
+    ServiceName = var.service_name
   }
   alarm_actions = var.sns_topic_arn != "" ? [var.sns_topic_arn] : []
 }
 
-# Alarm: tráfico saliente alto
-resource "aws_cloudwatch_metric_alarm" "network_out_high" {
-  alarm_name          = "${var.environment}-network-out-high"
+# Alarm Memory alta
+resource "aws_cloudwatch_metric_alarm" "ecs_mem_high" {
+  alarm_name          = "${var.environment}-ecs-mem-high"
   comparison_operator = "GreaterThanThreshold"
   evaluation_periods  = 1
-  metric_name         = "NetworkBytesOut"
-  namespace           = "AWS/NetworkInterface"
+  metric_name         = "MemoryUtilization"
+  namespace           = "AWS/ECS"
   period              = 300
-  statistic           = "Sum"
-  threshold           = 1000000000 # 1GB
-  alarm_description   = "Alert when VPC sends too much traffic"
+  statistic           = "Average"
+  threshold           = 80
+  alarm_description   = "Alert when ECS Memory > 80%"
   dimensions = {
-    VpcId = var.vpc_id
+    ClusterName = var.cluster_name
+    ServiceName = var.service_name
   }
   alarm_actions = var.sns_topic_arn != "" ? [var.sns_topic_arn] : []
 }
