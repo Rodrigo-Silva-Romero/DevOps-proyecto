@@ -45,28 +45,16 @@ output "lambda_url" {
   value = module.lambda.lambda_url
 }
 
-output "ecr_product_dashboard" {
-  value = module.observability_product.dashboard_name
+output "ecr_dashboard_name" {
+  value = module.observability_ecr.ecr_dashboard_name
 }
 
-output "ecr_inventory_dashboard" {
-  value = module.observability_inventory.dashboard_name
+output "ecr_vuln_alarm_arns" {
+  value = module.observability_ecr.ecr_vuln_alarm_arns
 }
 
-output "ecr_apigateway_dashboard" {
-  value = module.observability_apigateway.dashboard_name
-}
-
-output "ecr_product_vuln_alarm" {
-  value = module.observability_product.ecr_vuln_alarm_arn
-}
-
-output "ecr_inventory_vuln_alarm" {
-  value = module.observability_inventory.ecr_vuln_alarm_arn
-}
-
-output "ecr_apigateway_vuln_alarm" {
-  value = module.observability_apigateway.ecr_vuln_alarm_arn
+output "ecr_size_alarm_arns" {
+  value = module.observability_ecr.ecr_size_alarm_arns
 }
 
 output "ecs_pending_high_alarm_arn" {
