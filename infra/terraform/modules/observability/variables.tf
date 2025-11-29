@@ -1,15 +1,5 @@
-variable "cluster_name" {
-  description = "ECS Cluster Name"
-  type        = string
-}
-
-variable "service_name" {
-  description = "ECS Service Name"
-  type        = string
-}
-
-variable "environment" {
-  description = "Environment name"
+variable "repository_name" {
+  description = "Nombre del repositorio ECR a monitorear"
   type        = string
 }
 
@@ -18,8 +8,13 @@ variable "aws_region" {
   type        = string
 }
 
+variable "environment" {
+  description = "Environment name"
+  type        = string
+}
+
 variable "sns_topic_arn" {
-  description = "SNS Topic ARN for alarm notifications"
+  description = "SNS Topic ARN para notificaciones de alarma"
   type        = string
   default     = ""
 }
