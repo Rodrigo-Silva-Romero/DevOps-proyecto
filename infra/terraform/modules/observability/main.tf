@@ -55,7 +55,7 @@ resource "aws_cloudwatch_metric_alarm" "ecr_vuln_alarm" {
   statistic           = "Maximum"
   threshold           = 0
   dimensions = {
-    RepositoryName = each.key
+    RepositoryName = each.value
   }
   alarm_actions = var.sns_topic_arn != "" ? [var.sns_topic_arn] : []
 }
@@ -73,7 +73,7 @@ resource "aws_cloudwatch_metric_alarm" "ecr_size_alarm" {
   statistic           = "Maximum"
   threshold           = 5 * 1024 * 1024 * 1024
   dimensions = {
-    RepositoryName = each.key
+    RepositoryName = each.value
   }
   alarm_actions = var.sns_topic_arn != "" ? [var.sns_topic_arn] : []
 }
