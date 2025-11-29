@@ -83,8 +83,8 @@ module "lambda" {
   app_password  = var.app_password
 }
 
-module "observability_ecr" {
-  source           = "./modules/observability_ecr"
+module "observability" {
+  source           = "./modules/observability"
   repository_names = values(module.ecr.ecr_urls) # toma los nombres de los repositorios creados
   environment      = var.environment
   aws_region       = var.aws_region
