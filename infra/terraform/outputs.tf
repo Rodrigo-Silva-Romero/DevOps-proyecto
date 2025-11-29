@@ -46,15 +46,15 @@ output "lambda_url" {
 }
 
 
-output "vpc_dashboard_name" {
+output "ecs_dashboard_name" {
   value       = module.observability.dashboard_name
-  description = "Nombre del CloudWatch dashboard"
+  description = "Nombre del CloudWatch dashboard ECS"
 }
 
-output "network_in_zero_alarm_arn" {
-  value       = module.observability.network_in_zero_alarm_arn
+output "ecs_cpu_high_alarm_arn" {
+  value       = module.observability.ecs_cpu_high_alarm_arn
 }
 
-output "network_out_high_alarm_arn" {
-  value       = module.observability.network_out_high_alarm_arn
+output "ecs_mem_high_alarm_arn" {
+  value       = module.observability.ecs_mem_high_alarm_arn
 }
