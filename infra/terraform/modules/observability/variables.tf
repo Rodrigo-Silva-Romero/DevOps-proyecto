@@ -1,5 +1,10 @@
-variable "repository_name" {
-  description = "Nombre del repositorio ECR a monitorear"
+variable "repository_names" {
+  description = "Lista de nombres de repositorios ECR a monitorear"
+  type        = list(string)
+}
+
+variable "environment" {
+  description = "Environment name"
   type        = string
 }
 
@@ -8,13 +13,8 @@ variable "aws_region" {
   type        = string
 }
 
-variable "environment" {
-  description = "Environment name"
-  type        = string
-}
-
 variable "sns_topic_arn" {
-  description = "SNS Topic ARN para notificaciones de alarma"
+  description = "SNS Topic ARN for alarm notifications"
   type        = string
   default     = ""
 }
