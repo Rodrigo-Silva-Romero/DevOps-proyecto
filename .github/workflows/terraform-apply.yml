@@ -71,9 +71,5 @@ jobs:
 
       - name: Ejecutar Lambda vía curl
         working-directory: infra/terraform
-        run: |
-          echo "Obteniendo URL de la Lambda..."
-          LAMBDA_URL=$(terraform output -raw lambda_url)
-
-          echo "Invocando Lambda: $LAMBDA_URL"
-          curl -X POST "$LAMBDA_URL"
+        run: | 
+          LAMBDA_URL=$(terraform output -raw lambda_url | grep -oE "^https://.*\.lambda-url\..*\.on\.aws/?$") curl -X POST "$LAMBDA_URL"
