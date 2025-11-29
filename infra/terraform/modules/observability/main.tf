@@ -46,7 +46,7 @@ resource "aws_cloudwatch_dashboard" "ecr_dashboard" {
 resource "aws_cloudwatch_metric_alarm" "ecr_vuln_alarm" {
   for_each = var.repository_names
 
-  alarm_name          = "${var.environment}-${each.key}-vulnerabilities"
+  alarm_name          = "${var.environment}-${each.value}-vulnerabilities"
   comparison_operator = "GreaterThanThreshold"
   evaluation_periods  = 1
   metric_name         = "ImageScanFindingsCount"
@@ -64,7 +64,7 @@ resource "aws_cloudwatch_metric_alarm" "ecr_vuln_alarm" {
 resource "aws_cloudwatch_metric_alarm" "ecr_size_alarm" {
   for_each = var.repository_names
 
-  alarm_name          = "${var.environment}-${each.key}-size-high"
+  alarm_name          = "${var.environment}-${each.value}-size-high"
   comparison_operator = "GreaterThanThreshold"
   evaluation_periods  = 1
   metric_name         = "RepositorySizeBytes"
