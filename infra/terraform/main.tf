@@ -61,9 +61,9 @@ module "ecs_service_core" {
   assign_public_ip  = true
   target_group_arn  = module.alb.target_group_arn
   aws_region        = var.aws_region
-  ecr_product_url   = module.ecr.ecr_urls["product"]
-  ecr_inventory_url = module.ecr.ecr_urls["inventory"]
-  ecr_api_url       = module.ecr.ecr_urls["apigateway"]
+  ecr_product_url     = var.ecr_product_url
+  ecr_inventory_url   = var.ecr_inventory_url
+  ecr_api_url         = var.ecr_api_url
 }
 
 # Lambda
