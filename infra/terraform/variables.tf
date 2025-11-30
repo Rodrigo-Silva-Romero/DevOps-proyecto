@@ -35,3 +35,18 @@ variable "apigateway_port" {
   type = number
   description = "Puerto que expone el API Gateway"
 }
+
+variable "ecr_product_url" {
+  type        = string
+  description = "URL del repositorio ECR para product"
+}
+
+variable "ecr_inventory_url" {
+  type        = string
+  description = "URL del repositorio ECR para inventory"
+}
+
+variable "ecr_api_url" {
+  type        = string
+  description = "URL del repositorio ECR para apigateway"
+}
