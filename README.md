@@ -172,26 +172,23 @@ La arquitectura del proyecto se basa en un enfoque de **microservicios**, donde 
 
 Este modelo favorece el despliegue y la actualización individual de cada servicio sin afectar al resto del sistema, además de facilitar la detección de fallos y la optimización de componentes específicos. La separación modular también permite asignar tecnologías, recursos y pipelines independientes para cada microservicio, de acuerdo con las necesidades de su funcionalidad.
 
-    5.1a Arquitectura de despliegue (AWS)
+#### 5.1a Arquitectura de despliegue (AWS)
 
 <img width="551" height="469" alt="Aspose Words 9986df04-c16e-4362-91e4-5250e7d621d5 008" src="https://github.com/user-attachments/assets/3b0fbbc2-85d8-40be-bd43-82ebfefd2eb2" />
 
-    5.1b Diagrama de arquitectura
+#### 5.1b Diagrama de arquitectura
 
-    5.1c Flujo de comunicación entre componentes
+#### 5.1c Flujo de comunicación entre componentes
 
 #### *5.2 Estructura del repositorio (tree)*
 TODO
 
-#### *5.3 Pruebas locales*
-
-- Pytest TODO
-- Postman Collection TODO
 ------
 ## 6\. Infraestructura como Código (Terraform)
 #### *6.1 Estructura de carpetas de Terraform*
 
-TODO
+      TODO
+
 #### *6.2 Módulos implementados*
 
 VPC
@@ -218,19 +215,19 @@ ECS Task Definition *(fuera del directorio de módulos, pero parte de la infraes
 
 #### *6.3 Variables por entorno y secrets*
 
-TODO
----
+    TODO
+-------
 #### *6.4 Backend Remoto en Amazon S3*
 ####
 El proyecto utiliza un bucket S3 como backend remoto de Terraform, con el objetivo de almacenar el archivo de estado (terraform.tfstate) de forma centralizada, segura y accesible para todo el equipo de trabajo y los pipelines de CI/CD. Esta práctica es fundamental para garantizar consistencia en la infraestructura desplegada y evitar conflictos en el manejo del estado.
 
----
+-------
 #### *6.5 Outputs importantes*
 
 - URLs ECR
 - ARN Task
 - DNS ALB
----
+-------
 ## 7\. Arquitectura Serverless (Lambda + SNS + EventBridge)
 #### *7.1 Objetivo de la Lambda*
 
@@ -240,7 +237,7 @@ Este POST actúa como el disparador de la función, provocando que la Lambda pro
 
 De esta manera, cada despliegue de infraestructura queda registrado y comunicado sin intervención manual, asegurando una trazabilidad completa de los cambios aplicados.
 
----------
+-------
 ## 9\. Despliegue
 #### *9.2 Despliegue con Terraform*
 #### *9.3 Despliegue continuo con GitHub Actions*
