@@ -72,5 +72,4 @@ module "lambda" {
   sender_email  = var.sender_email
   app_password  = var.app_password
 }
-}
 
