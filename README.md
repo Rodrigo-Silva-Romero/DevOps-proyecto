@@ -71,15 +71,21 @@ La automatización del ciclo de integración y despliegue continuo se implementa
 
 #### *terraform-destroy.yml*
 
+#### *storage-apply.yml*
 
 
-**Estrategia de pipelines: Apply / Deploy de app/ Destroy**
 
-Se diseñaron tres pipelines distintos por responsabilidad:
+## **Estrategia de pipelines: Apply / Deploy de app / Destroy / Storage Deploy**
 
-1. Terraform Apply : despliegue de infraestructura 
-2. Deploy Only (Build & Deploy) : Testing de código y calidad construcción de imágenes, push a ECR y actualización del servicio ECS.
-3. Terraform Destroy : eliminación controlada de la infraestructura.
+Se diseñaron cuatro pipelines distintos, cada uno con responsabilidades bien definidas:
+
+1. **Terraform Apply**: despliegue de la infraestructura principal del proyecto (VPC, ECS, ALB, RDS, etc.).
+
+2. **Deploy Only (Build & Deploy)**: testing de código, análisis de calidad, construcción de imágenes Docker, push a ECR y actualización del servicio ECS.
+
+3. **Terraform Destroy**: eliminación controlada y segura de toda la infraestructura desplegada.
+
+4. **Terraform Storage Deploy**: pipeline dedicado a la creación y gestión inicial del storage del 
 
 **Disparadores configurados**
 
@@ -87,23 +93,43 @@ Terraform Apply / Destroy : workflow\_dispatch (ejecución manual seleccionando 
 
 Pipeline de deploy de App (main.yml),  se dispara automáticamente con Merge a main.
 
-**Motivos de la decisión**
+## **Motivos de la decisión**
 
-Los pipelines se separaron para garantizar **seguridad, control y claridad**:
+Los pipelines se separaron para garantizar **seguridad, control y claridad**, especialmente al incorporar el nuevo pipeline de *Storage Deploy*:
 
-- **Responsabilidades independientes:** Los pipelines de Terraform apply/destroy maneja la infraestructura; el pipeline de la app (Deploy Only) solo testea el código y despliega contenedores. No se mezclan procesos ni riesgos.
-- **Ciclos de vida distintos:** La infraestructura cambia poco y debe revisarse; las imágenes cambian con cada merge a la rama main. Separar evita aplicar Terraform innecesariamente.
-- **Mayor trazabilidad:** Cambios de infra y cambios de aplicación quedan auditados por separado.
-- **Evita errores de dependencia:** La infraestructura se crea primero y solo una vez; luego los contenedores se despliegan sobre recursos ya estables.
-- **Destrucción de infra controlada:** terraform destroy se mantiene en un pipeline manual para evitar eliminaciones accidentales.
+- **Responsabilidades independientes:**  
+  Cada pipeline cumple un rol específico.  
+  - *Terraform Apply* y *Terraform Destroy* administran la infraestructura principal.  
+  - *Deploy Only* gestiona la construcción y despliegue de contenedores sin tocar la infraestructura.  
+  - *Terraform Storage Deploy* se encarga exclusivamente de crear los recursos base iniciales (S3 para tfstate y repositorios ECR).  
+  Esta separación evita mezclar procesos, riesgos y permisos.
+
+- **Ciclos de vida distintos:**  
+  La infraestructura base (S3, ECR) se crea una sola vez; la infraestructura operativa cambia poco; las imágenes de la app cambian constantemente.  
+  Mantener pipelines aislados evita aplicar Terraform innecesariamente en etapas donde no corresponde.
+
+- **Mayor trazabilidad:**  
+  Cada tipo de cambio queda auditado en su propio pipeline:  
+  - Cambios de storage base  
+  - Cambios de infraestructura  
+  - Cambios de aplicación  
+  Esto permite identificar claramente dónde ocurrió cada modificación.
+
+- **Evita errores de dependencia:**  
+  La secuencia es segura: primero *Storage Deploy*, luego *Apply*, y recién después los despliegues de contenedores.  
+  Esto garantiza que los repositorios ECR y el bucket S3 existan antes de los demás pipelines.
+
+- **Destrucción de infra controlada:**  
+  *Terraform Destroy* se mantiene como un pipeline manual e independiente para minimizar el riesgo de eliminaciones accidentales y asegurar un proceso supervisado.
+
 
 **Disparadores y flujo operativo.**
 
 **Precondiciones**
 
-**Poner acá todo lo que hay que cargar en secrets** 
-
-`	`**AWS credenciales 3** 
+                                                                          (  **Poner acá todo lo que hay que cargar en secrets** 
+                                                                            
+                                                                            `	`**AWS credenciales 3**) 
 
 - **Cambios en infraestructura**: generar PR → revisar tfplan → ejecutar el pipeline Terraform Apply manualmente (workflow\_dispatch) para el environment objetivo. 
 
