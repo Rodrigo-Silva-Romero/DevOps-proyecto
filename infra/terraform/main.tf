@@ -72,18 +72,5 @@ module "lambda" {
   sender_email  = var.sender_email
   app_password  = var.app_password
 }
-
-module "observability" {
-  source = "./modules/observability"
-
-  repository_names = {
-    apigateway = var.ecr_repositories["apigateway"]
-    product    = var.ecr_repositories["product"]
-    inventory  = var.ecr_repositories["inventory"]
-  }
-
-  environment   = var.environment
-  aws_region    = var.aws_region
-  sns_topic_arn = "" # opcional
 }
 
