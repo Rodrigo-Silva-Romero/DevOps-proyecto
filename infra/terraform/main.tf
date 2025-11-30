@@ -23,12 +23,6 @@ module "vpc" {
   environment          = var.environment
 }
 
-# ECR
-module "ecr" {
-  source = "./modules/ecr"
-  ecr_repositories = var.ecr_repositories
-}
-
 # Security Groups (creates both alb and ecs SGs)
 module "security_group" {
   source          = "./modules/security-group"
