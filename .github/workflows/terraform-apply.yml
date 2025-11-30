@@ -41,7 +41,7 @@ jobs:
 
       - name: Terraform Plan
         working-directory: infra/terraform
-        run: terraform plan -var-file="${{ github.event.inputs.environment }}.tfvars" -var="sender_email=${{ secrets.SENDER_EMAIL }}" -var="app_password=${{ secrets.APP_PASSWORD }}" -var="environment=${{ github.event.inputs.environment }}" -out=tfplan
+        run: terraform plan -var-file="${{ github.event.inputs.environment }}.tfvars" -var="sender_email=${{ secrets.SENDER_EMAIL }}" -var="app_password=${{ secrets.APP_PASSWORD }}" -var="environment=${{ github.event.inputs.environment }}" -var="ecr_product_url=${{ secrets.ECR_PRODUCT_URL }}" -var="ecr_inventory_url=${{ secrets.ECR_INVENTORY_URL }}" -var="ecr_api_url=${{ secrets.ECR_API_URL }}" -out=tfplan
 
       - name: Terraform Apply
         working-directory: infra/terraform
