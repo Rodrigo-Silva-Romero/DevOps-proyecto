@@ -9,11 +9,6 @@ output "public_subnet_ids" {
   value       = module.vpc.public_subnet_ids
 }
 
-#ECR
-output "ecr_urls" {
-  value = module.ecr.ecr_urls
-}
-
 output "cluster_id" {
   value = module.ecs_cluster.cluster_id
 }
@@ -28,31 +23,6 @@ output "ecs_service_names" {
   value       = module.ecs_service_core.service_names
 }
 
-# ECR individual outputs para uso con terraform -raw
-output "ecr_api_url" {
-  value = module.ecr.ecr_urls["apigateway"]
-}
-
-output "ecr_product_url" {
-  value = module.ecr.ecr_urls["product"]
-}
-
-output "ecr_inventory_url" {
-  value = module.ecr.ecr_urls["inventory"]
-}
-
 output "lambda_url" {
   value = module.lambda.lambda_url
-}
-
-output "ecr_dashboard_name" {
-  value = module.observability.ecr_dashboard_name
-}
-
-output "ecr_vuln_alarm_arns" {
-  value = module.observability.ecr_vuln_alarm_arns
-}
-
-output "ecr_size_alarm_arns" {
-  value = module.observability.ecr_size_alarm_arns
 }
