@@ -41,3 +41,27 @@ jobs:
         working-directory: infra/infra-storage
         run: terraform output
 
+      - name: Obtener ECR URLs
+        id: get-ecr-urls
+        working-directory: infra/infra-storage
+        run: |
+          echo "== Obteniendo URLs de ECR =="
+          API=$(terraform output -raw ecr_api_url)
+          PRODUCT=$(terraform output -raw ecr_product_url)
+          INVENTORY=$(terraform output -raw ecr_inventory_url)
+
+          echo "API: $API"
+          echo "PRODUCT: $PRODUCT"
+          echo "INVENTORY: $INVENTORY"
+
+          echo "ecr_api_url=$API" >> $GITHUB_OUTPUT
+          echo "ecr_product_url=$PRODUCT" >> $GITHUB_OUTPUT
+          echo "ecr_inventory_url=$INVENTORY" >> $GITHUB_OUTPUT
+
+      - name: Actualizar secretos de GitHub
+        run: |
+          gh secret set ECR_API_URL       --body "${{ steps.get-ecr-urls.outputs.ecr_api_url }}"
+          gh secret set ECR_PRODUCT_URL   --body "${{ steps.get-ecr-urls.outputs.ecr_product_url }}"
+          gh secret set ECR_INVENTORY_URL --body "${{ steps.get-ecr-urls.outputs.ecr_inventory_url }}"
+        env:
+          GH_TOKEN: ${{ secrets.REPO_ADMIN_PAT }}
