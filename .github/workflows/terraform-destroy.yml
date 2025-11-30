@@ -1,4 +1,3 @@
-
 name: Terraform Destroy
 
 on:
@@ -19,32 +18,26 @@ jobs:
     name: Terraform Destroy
     runs-on: ubuntu-latest
     steps:
-      # Obtener el código
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # Configurar Terraform
       - name: Set up Terraform
         uses: hashicorp/setup-terraform@v2
         with:
           terraform_version: 1.13.4
 
-      # Configurar credenciales de AWS
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v2
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
-          aws-region: ${{ secrets.AWS_REGION }}
+          aws-region: "us-east-1"
 
-      # Inicializar Terraform (backend S3)
       - name: Terraform Init
         working-directory: infra/terraform
-        run: terraform init -input=false
+        run: terraform init -backend-config="bucket=bucket-stockwiz-tf" -backend-config="key=${{ github.event.inputs.environment }}/terraform.tfstate" -backend-config="region=us-east-1"
 
-      # Destruir la infraestructura
       - name: Terraform Destroy
         working-directory: infra/terraform
-        run: terraform destroy -var-file="${{ github.event.inputs.environment }}.tfvars" -var="sender_email=${{ secrets.SENDER_EMAIL }}" -var="app_password=${{ secrets.APP_PASSWORD }}" -auto-approve
-
+        run: terraform destroy -var-file="${{ github.event.inputs.environment }}.tfvars" -var="sender_email=${{ secrets.SENDER_EMAIL }}" -var="app_password=${{ secrets.APP_PASSWORD }}" -var="environment=${{ github.event.inputs.environment }}" -auto-approve
