@@ -21,17 +21,6 @@ variable "public_subnet_cidrs" {
   type        = list(string)
 }
 
-#ECR
-variable "ecr_repositories" {
-  type = map(string)
-  description = "Repositorios ECR por microservicio"
-  default = {
-    apigateway = "apigateway-ecr"
-    product    = "product-ecr"
-    inventory  = "inventory-ecr"
-  }
-}
-
 variable "sender_email" {
   description = "Email del remitente"
   type        = string
