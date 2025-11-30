@@ -114,7 +114,7 @@ Aplicar una arquitectura clara (por ejemplo, Clean Architecture o MVC según el 
 
 Separar controladores, servicios y lógica de negocio.
 
-### 4. Recomendaciones sobre métricas clave
+### Recomendaciones sobre métricas clave
 #### 4.1 Cobertura 0%
 Situación
 
@@ -192,7 +192,11 @@ El análisis de SonarCloud muestra un proyecto funcional pero con puntos crític
 La aplicación de estas recomendaciones permitirá:
 
 ✔ Reducir riesgos de seguridad
+
 ✔ Mejorar mantenibilidad del código
+
 ✔ Aumentar estabilidad en producción
+
 ✔ Facilitar la colaboración entre desarrolladores
+
 ✔ Cumplir estándares profesionales de calidad
