@@ -1,4 +1,3 @@
-
 # Análisis SonarCloud (Overview)
 
 ## 1. Introducción
