@@ -7,11 +7,7 @@ terraform {
     }
   }
 
-  backend "s3" {
-    bucket = "bucket-stockwiz-tf"
-    key    = "root/terraform.tfstate"      # la ruta + nombre del archivo dentro del bucket
-    region = "us-east-1"
-  }
+  backend "s3" {}
 }
 
 provider "aws" {
