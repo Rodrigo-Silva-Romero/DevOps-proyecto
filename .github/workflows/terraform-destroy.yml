@@ -40,4 +40,4 @@ jobs:
 
       - name: Terraform Destroy
         working-directory: infra/terraform
-        run: terraform destroy -var-file="${{ github.event.inputs.environment }}.tfvars" -var="sender_email=${{ secrets.SENDER_EMAIL }}" -var="app_password=${{ secrets.APP_PASSWORD }}" -var="environment=${{ github.event.inputs.environment }}" -auto-approve
+        run: terraform destroy -var-file="${{ github.event.inputs.environment }}.tfvars" -var="sender_email=${{ secrets.SENDER_EMAIL }}" -var="app_password=${{ secrets.APP_PASSWORD }}" -var="environment=${{ github.event.inputs.environment }}" -var="ecr_product_url=${{ secrets.ECR_PRODUCT_URL }}" -var="ecr_inventory_url=${{ secrets.ECR_INVENTORY_URL }}" -var="ecr_api_url=${{ secrets.ECR_API_URL }}" -auto-approve
