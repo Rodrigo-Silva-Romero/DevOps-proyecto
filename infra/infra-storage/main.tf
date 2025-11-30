@@ -20,7 +20,7 @@ module "ecr" {
 
 # Invocar módulo S3
 module "s3" {
-  source      = "./s3"
+  source      = "./S3"
   bucket_name = var.bucket_name
 }
 
