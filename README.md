@@ -22,6 +22,8 @@ La planificación y el seguimiento del proyecto se estructuraron a partir de un 
 
 Posteriormente, esta codificación se trasladó a Trello, donde cada tarjeta incorporó el color correspondiente a su etapa del flujo. De esta forma, la herramienta no solo centraliza la gestión operativa, sino que también mantiene la coherencia visual del proceso definido en Miro, facilitando la lectura del estado de avance y la toma de decisiones durante la ejecución del proyecto.
 
+      Link de Trello https://trello.com/invite/b/69128221a48a84ff2095596f/ATTIc557464d08671ad33a587df1ca25ee4cE0AD1B86/devops 
+
 <img width="363" height="243" alt="Aspose Words 9986df04-c16e-4362-91e4-5250e7d621d5 002" src="https://github.com/user-attachments/assets/d016785f-26ae-4d14-9ed5-ca255c4c8fa0" />
 
 
