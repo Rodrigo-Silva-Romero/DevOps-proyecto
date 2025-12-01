@@ -218,7 +218,7 @@ ECS Task Definition *(fuera del directorio de módulos, pero parte de la infraes
     TODO
 -------
 ### *6.4 Backend Remoto en Amazon S3*
-####
+
 El proyecto utiliza un bucket S3 como backend remoto de Terraform, con el objetivo de almacenar el archivo de estado (terraform.tfstate) de forma centralizada, segura y accesible para todo el equipo de trabajo y los pipelines de CI/CD. Esta práctica es fundamental para garantizar consistencia en la infraestructura desplegada y evitar conflictos en el manejo del estado.
 
 -------
@@ -319,8 +319,7 @@ Esta sección permite verificar el rendimiento y comportamiento de las funciones
 
 El dashboard implementado en Amazon CloudWatch constituye una herramienta fundamental para la observabilidad del proyecto, permitiendo monitorear métricas críticas de ejecución, tráfico y rendimiento. Su estructura clara y su enfoque orientado a los componentes principales aseguran una supervisión eficiente durante todo el ciclo de vida del sistema.
 
-####  Métricas ECS*
-####  Healthchecks*
+####  *Healthchecks*
 
 ---------
 ## 12\. Conclusiones del proyecto
