@@ -1,0 +1,118 @@
+Delivered-To: fernandopunales@gmail.com
+Received: by 2002:a05:6358:b10f:b0:25a:bc9e:381f with SMTP id a15csp13353934rwo;
+        Sun, 30 Nov 2025 17:47:49 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IF4xmVgU0k/yItwe/Go+s6744MMc0lwE905u6xWgHRpzphP5O5N/VdKF52FW+OwYhj/UQk6
+X-Received: by 2002:a05:620a:4511:b0:89f:5a59:bf30 with SMTP id af79cd13be357-8b4ebdcb399mr3404406185a.78.1764553669497;
+        Sun, 30 Nov 2025 17:47:49 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; t=1764553669; cv=none;
+        d=google.com; s=arc-20240605;
+        b=YDW1qAPCZL8Hr4EUc5ZOo+nqBHqTfRJchpTu4LF/05giO32rgxxKfvekAaUli6vfHp
+         GX3yrtEi6RgI16pglfNx1sNfncdJBja5gkWSD/a1gU8+ms/ENbWRwmOccNKV749EC1pu
+         KfFdfpkYJxtLZgeyGeirYfgIXcoM45kOQgmGHTqpVCovpQffnLKOpTZUWF1nGJjaZm/9
+         AJoTWcZrEyDdRrJ76xFkY6JBefMiGNg1PtODuZXMQ4XOjYEd5b5R4bhoUwjwj2D+neEJ
+         cuEj+pLWNRmxv42lsrBuv5PHdgqyTk1pL7KM0b6vysxiu4VKYiqyxJGG/cZ228Ylad0+
+         oJhg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
+        h=feedback-id:content-transfer-encoding:mime-version:subject
+         :message-id:to:from:date:dkim-signature:dkim-signature;
+        bh=LsSdp1XRdDp0pSwcRexOTFqoyHRHpUn4TpfFRhc3LJs=;
+        fh=DwKxbsu8VGXh2nIVDXjswj1yGILu5CUbdbYgYAyYBEU=;
+        b=D6QOCaDfABFyWsClbTnqhSYILijYd6ZHWmvxPut9PYjWYzZ75/XFbSAzHEe42hUe/j
+         e4pAmvPZp+QmwWPY8ENioy6T88lRnZ7nRjuEw61A4RY3rzgI1sTJVPgX/uraes9UqIQl
+         b4W/zP69zEvOf2pdOgOWr8p7CNp+bP8yyGRVilXg33Hd1Z0rL9rP1kXTR6igbTVHrMDH
+         MwpvAOXVaQijxw90lnm6U28soFkjrI8xC/PdOla05u/dmJn2IVLfHQl/qTgE9kcP0jvO
+         f+1JHMYEjRC4fawd/45iBS6f2wT97AIsVtYHLPgRwfvrGw0plLi38Vq/Fgk+jNP1C/HP
+         SqpQ==;
+        dara=google.com
+ARC-Authentication-Results: i=1; mx.google.com;
+       dkim=pass header.i=@sns.amazonaws.com header.s=ynpxk332ompudjhq6oyfigjxlukl4vxo header.b=xgjKpi1P;
+       dkim=pass header.i=@amazonses.com header.s=6gbrjpgwjskckoa6a5zn6fwqkn67xbtw header.b=Znkoe2Nv;
+       spf=pass (google.com: domain of 0100019ad7983a46-9d4f524d-2bb4-4483-a482-4841ec10a449-000000@amazonses.com designates 54.240.48.53 as permitted sender) smtp.mailfrom=0100019ad7983a46-9d4f524d-2bb4-4483-a482-4841ec10a449-000000@amazonses.com;
+       dmarc=pass (p=QUARANTINE sp=NONE dis=NONE) header.from=amazonaws.com
+Return-Path: <0100019ad7983a46-9d4f524d-2bb4-4483-a482-4841ec10a449-000000@amazonses.com>
+Received: from a48-53.smtp-out.amazonses.com (a48-53.smtp-out.amazonses.com. [54.240.48.53])
+        by mx.google.com with ESMTPS id af79cd13be357-8b52a1c70f8si377531485a.1635.2025.11.30.17.47.49
+        for <fernandopunales@gmail.com>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 30 Nov 2025 17:47:49 -0800 (PST)
+Received-SPF: pass (google.com: domain of 0100019ad7983a46-9d4f524d-2bb4-4483-a482-4841ec10a449-000000@amazonses.com designates 54.240.48.53 as permitted sender) client-ip=54.240.48.53;
+Authentication-Results: mx.google.com;
+       dkim=pass header.i=@sns.amazonaws.com header.s=ynpxk332ompudjhq6oyfigjxlukl4vxo header.b=xgjKpi1P;
+       dkim=pass header.i=@amazonses.com header.s=6gbrjpgwjskckoa6a5zn6fwqkn67xbtw header.b=Znkoe2Nv;
+       spf=pass (google.com: domain of 0100019ad7983a46-9d4f524d-2bb4-4483-a482-4841ec10a449-000000@amazonses.com designates 54.240.48.53 as permitted sender) smtp.mailfrom=0100019ad7983a46-9d4f524d-2bb4-4483-a482-4841ec10a449-000000@amazonses.com;
+       dmarc=pass (p=QUARANTINE sp=NONE dis=NONE) header.from=amazonaws.com
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
+	s=ynpxk332ompudjhq6oyfigjxlukl4vxo; d=sns.amazonaws.com;
+	t=1764553669;
+	h=Date:From:To:Message-ID:Subject:MIME-Version:Content-Type:Content-Transfer-Encoding;
+	bh=IsugFQQwZSYoR5UgO3k+yP10Z1ocWzlgFOpHjnFXzYo=;
+	b=xgjKpi1P7ZljTVYOaG84UCrgnxPEKV5dYzSWUPW2kUHLfwo6fURvEUqrikICV9NS
+	ltCA+OzUW5RiCTvTa8+fxXhj0AGywW2fpwQ7svheCuTX8nUHuGkUk3mLo0iurwQ0Ce/
+	vIDa2OA1BGxmQHhC+LMXcyeIqZqLwShN6zONB7Pk=
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
+	s=6gbrjpgwjskckoa6a5zn6fwqkn67xbtw; d=amazonses.com; t=1764553669;
+	h=Date:From:To:Message-ID:Subject:MIME-Version:Content-Type:Content-Transfer-Encoding:Feedback-ID;
+	bh=IsugFQQwZSYoR5UgO3k+yP10Z1ocWzlgFOpHjnFXzYo=;
+	b=Znkoe2Nvdu/08MEFlL/Zf/ktL1Bk1JXpxJ1d4lj60GiZOqUXlKzBBm2g++TC3Nsd
+	5GQM4iX4GqrE2S+x+IexI63dusOfcLAgk7rSwQB8L8Tl+wv/xznxPmKzUITuIoUVBvn
+	Z9DJmDBpSgVjRxR1IaNmrWauPFMglYhT+kjMx69U=
+Date: Mon, 1 Dec 2025 01:47:49 +0000
+From: AWS Notifications <no-reply@sns.amazonaws.com>
+To: fernandopunales@gmail.com
+Message-ID: <0100019ad7983a46-9d4f524d-2bb4-4483-a482-4841ec10a449-000000@email.amazonses.com>
+Subject: ALARM: "ALB _ Uso de LCU cercano al l_mite" in US East (N.
+ Virginia)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+x-amz-sns-message-id: cd60de89-029d-5959-b86d-bf2ff498b62a
+x-amz-sns-subscription-arn: arn:aws:sns:us-east-1:851725322802:Default_CloudWatch_Alarms_Topic:501b60fc-a3f1-462a-a375-0716e13ff885
+Feedback-ID: ::1.us-east-1.rLk2FYYR7ms1BvCiYXCIqXvY3U/J1vVW0G3YrYLy0pk=:AmazonSES
+X-SES-Outgoing: 2025.12.01-54.240.48.53
+
+You are receiving this email because your Amazon CloudWatch Alarm "ALB — Uso de LCU cercano al límite" in the US East (N. Virginia) region has entered the ALARM state, because "Threshold Crossed: 1 out of the last 1 datapoints [5.0 (01/12/25 01:40:00)] was greater than the threshold (2.0) (minimum 1 datapoint for OK -> ALARM transition)." at "Monday 01 December, 2025 01:47:49 UTC".
+
+View this alarm in the AWS Management Console:
+https://us-east-1.console.aws.amazon.com/cloudwatch/deeplink.js?region=us-east-1#alarmsV2:alarm/ALB%20%E2%80%94%20Uso%20de%20LCU%20cercano%20al%20l%C3%ADmite
+
+Alarm Details:
+- Name:                       ALB — Uso de LCU cercano al límite
+- Description:                # Nombre: ALB_LCU_Utilization_High
+
+Métrica: ConsumedLCUs o LCUUtilization (si la tenés calculada)
+
+Evaluación: 5 minutos
+
+## Acción sugerida: notificación; considerar aumentar target capacity o ajustar reglas de scaling
+
+Por qué: LCU alto implica que el balanceador está al límite y puede degradar el servicio.
+- State Change:               INSUFFICIENT_DATA -> ALARM
+- Reason for State Change:    Threshold Crossed: 1 out of the last 1 datapoints [5.0 (01/12/25 01:40:00)] was greater than the threshold (2.0) (minimum 1 datapoint for OK -> ALARM transition).
+- Timestamp:                  Monday 01 December, 2025 01:47:49 UTC
+- AWS Account:                851725322802
+- Alarm Arn:                  arn:aws:cloudwatch:us-east-1:851725322802:alarm:ALB — Uso de LCU cercano al límite
+
+Threshold:
+- The alarm is in the ALARM state when the metric is GreaterThanThreshold 2.0 for at least 1 of the last 1 period(s) of 300 seconds. 
+
+Monitored Metric:
+- MetricNamespace:                     AWS/ApplicationELB
+- MetricName:                          PeakLCUs
+- Dimensions:                          [LoadBalancer = app/dev-alb/03f8187bf22a8528]
+- Period:                              300 seconds
+- Statistic:                           Average
+- Unit:                                not specified
+- TreatMissingData:                    missing
+
+
+State Change Actions:
+- OK: 
+- ALARM: [arn:aws:sns:us-east-1:851725322802:Default_CloudWatch_Alarms_Topic]
+- INSUFFICIENT_DATA: 
+
+
+--
+If you wish to stop receiving notifications from this topic, please click or visit the link below to unsubscribe:
+https://sns.us-east-1.amazonaws.com/unsubscribe.html?SubscriptionArn=arn:aws:sns:us-east-1:851725322802:Default_CloudWatch_Alarms_Topic:501b60fc-a3f1-462a-a375-0716e13ff885&Endpoint=fernandopunales@gmail.com
+
+Please do not reply directly to this email. If you have any questions or comments regarding this email, please contact us at https://aws.amazon.com/support
