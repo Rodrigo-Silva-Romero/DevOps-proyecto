@@ -339,6 +339,7 @@ Esto ayuda a detectar procesos lentos, cuellos de botella o necesidad de aumenta
 
 #### 3. ALB – PeakLCUs cercano al límite
 
+LCU es la unidad que usa el ALB para medir cuánta carga está manejando, según conexiones, tráfico y reglas evaluadas.
 Se monitorea el consumo de LCUs del Application Load Balancer. La alarma se activa si PeakLCUs > 8 en un intervalo de 5 minutos.
 Esta métrica permite anticipar picos de tráfico, comportamientos anómalos o posibles incrementos de costo.
 
