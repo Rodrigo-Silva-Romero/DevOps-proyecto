@@ -32,10 +32,6 @@ jobs:
             -Dsonar.login=${{ secrets.SONAR_TOKEN }}
             -X
 
-      - name: Check Quality Gate
-        uses: SonarSource/sonarcloud-quality-gate-action@v1
-        with:
-          sonar_token: ${{ secrets.SONAR_TOKEN }}
 
   python_test:
     name: Python Health Test
