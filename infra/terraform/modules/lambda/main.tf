@@ -23,6 +23,7 @@ resource "aws_lambda_function" "handler" {
     variables = {
       SENDER_EMAIL = var.sender_email
       APP_PASSWORD = var.app_password
+      ENVIRONMENT  = var.environment 
     }
   }
 }
