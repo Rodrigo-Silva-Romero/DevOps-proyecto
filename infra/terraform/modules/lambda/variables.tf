@@ -1,5 +1,6 @@
 variable "lambda_name" {
-  default = "lambdaLab"
+  description = "Nombre único de la Lambda"
+  type        = string
 }
 
 variable "sender_email" {
