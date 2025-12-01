@@ -60,14 +60,11 @@ La automatización del ciclo de integración y despliegue continuo se implementa
 
 ### *Deploy Only - main.yml* 
 
-<img width="532" height="44" alt="Aspose Words 9986df04-c16e-4362-91e4-5250e7d621d5 006" src="https://github.com/user-attachments/assets/ec841d85-e711-479b-b038-6fa2464feb09" />
-
+<img width="2524" height="204" alt="image" src="https://github.com/user-attachments/assets/71c8881c-0e06-4aca-a0ad-ea58e0bb2be7" />
 
 ### *Terraform Deploy - terraform-apply.yml*
 
-<img width="520" height="106" alt="Aspose Words 9986df04-c16e-4362-91e4-5250e7d621d5 007" src="https://github.com/user-attachments/assets/2146d5c7-ec01-48ec-949e-6c79af450a1b" />
-
-
+<img width="2396" height="484" alt="image" src="https://github.com/user-attachments/assets/d813eeca-ec5c-4dfb-bba9-240b2f7080af" />
 
 #### *terraform-destroy.yml*
 
