@@ -1,6 +1,6 @@
-1. # Introducción
+# Introducción
 ##
-## Objetivo del proyecto
+1. ## Objetivo del proyecto
 
 El objetivo principal de este proyecto es diseñar, implementar y documentar una arquitectura completa para un sistema de microservicios desplegado sobre AWS utilizando prácticas modernas de DevOps, Infraestructura como Código y automatización continua. El propósito es construir una solución robusta, escalable y reproducible que integre diferentes tecnologías —Docker, ECS Fargate, Terraform, GitHub Actions y servicios serverless como AWS Lambda— demostrando la capacidad de orquestar múltiples componentes para ofrecer un sistema productivo realista y alineado con estándares profesionales.
 
@@ -56,14 +56,14 @@ Sin embargo, al tratarse de un equipo de solo dos integrantes, no siempre ambos 
 ## CI/CD (GitHub Actions)
 
 La automatización del ciclo de integración y despliegue continuo se implementa mediante **GitHub Actions**. A través de flujos de trabajo configurados en el repositorio, cada cambio enviado a las ramas relevantes dispara procesos automáticos de **CI/CD**, que incluyen compilación, pruebas, validaciones y despliegues hacia los entornos definidos. Esto asegura que el código sea verificado de forma constante y que los entregables se mantengan consistentes, confiables y listos para su despliegue.
-#### *Pipelines*
+### *Pipelines*
 
-#### *Deploy Only - main.yml* 
+### *Deploy Only - main.yml* 
 
 <img width="532" height="44" alt="Aspose Words 9986df04-c16e-4362-91e4-5250e7d621d5 006" src="https://github.com/user-attachments/assets/ec841d85-e711-479b-b038-6fa2464feb09" />
 
-####
-#### *Terraform Deploy - terraform-apply.yml*
+
+### *Terraform Deploy - terraform-apply.yml*
 
 <img width="520" height="106" alt="Aspose Words 9986df04-c16e-4362-91e4-5250e7d621d5 007" src="https://github.com/user-attachments/assets/2146d5c7-ec01-48ec-949e-6c79af450a1b" />
 
@@ -166,30 +166,30 @@ Este control actúa como una verificación preventiva adicional que complementa 
 
 5. ## Arquitectura del Sistema
 
-#### *5.1 Arquitectura funcional (microservicios)*
+### *5.1 Arquitectura funcional (microservicios)*
 
 La arquitectura del proyecto se basa en un enfoque de **microservicios**, donde cada componente del sistema se implementa como un servicio independiente, aislado y con una responsabilidad claramente definida. Cada microservicio expone su funcionalidad a través de APIs y se comunica con el resto del ecosistema mediante protocolos livianos, lo que permite una mayor flexibilidad, escalabilidad y facilidad de mantenimiento.
 
 Este modelo favorece el despliegue y la actualización individual de cada servicio sin afectar al resto del sistema, además de facilitar la detección de fallos y la optimización de componentes específicos. La separación modular también permite asignar tecnologías, recursos y pipelines independientes para cada microservicio, de acuerdo con las necesidades de su funcionalidad.
 
-#### 5.1a Arquitectura de despliegue (AWS)
+### 5.1a Arquitectura de despliegue (AWS)
 
 <img width="551" height="469" alt="Aspose Words 9986df04-c16e-4362-91e4-5250e7d621d5 008" src="https://github.com/user-attachments/assets/3b0fbbc2-85d8-40be-bd43-82ebfefd2eb2" />
 
-#### 5.1b Diagrama de arquitectura
+### 5.1b Diagrama de arquitectura
 
-#### 5.1c Flujo de comunicación entre componentes
+### 5.1c Flujo de comunicación entre componentes
 
-#### *5.2 Estructura del repositorio (tree)*
+### *5.2 Estructura del repositorio (tree)*
 TODO
 
 ------
 ## 6\. Infraestructura como Código (Terraform)
-#### *6.1 Estructura de carpetas de Terraform*
+### *6.1 Estructura de carpetas de Terraform*
 
       TODO
 
-#### *6.2 Módulos implementados*
+### *6.2 Módulos implementados*
 
 VPC
 
@@ -213,23 +213,23 @@ ECS Task Definition *(fuera del directorio de módulos, pero parte de la infraes
   - Redis
 - Incluye variables, outputs y la plantilla JSON usada por GitHub Actions.
 
-#### *6.3 Variables por entorno y secrets*
+### *6.3 Variables por entorno y secrets*
 
     TODO
 -------
-#### *6.4 Backend Remoto en Amazon S3*
+### *6.4 Backend Remoto en Amazon S3*
 ####
 El proyecto utiliza un bucket S3 como backend remoto de Terraform, con el objetivo de almacenar el archivo de estado (terraform.tfstate) de forma centralizada, segura y accesible para todo el equipo de trabajo y los pipelines de CI/CD. Esta práctica es fundamental para garantizar consistencia en la infraestructura desplegada y evitar conflictos en el manejo del estado.
 
 -------
-#### *6.5 Outputs importantes*
+### *6.5 Outputs importantes*
 
 - URLs ECR
 - ARN Task
 - DNS ALB
 -------
 ## 7\. Arquitectura Serverless (Lambda + SNS + EventBridge)
-#### *7.1 Objetivo de la Lambda*
+### *7.1 Objetivo de la Lambda*
 
 La función Lambda es invocada automáticamente al finalizar el pipeline de creación de la infraestructura (Terraform Apply). Durante la ejecución del workflow, el pipeline obtiene la URL pública de la Lambda (Lambda Function URL), la almacena en una variable y una vez completado el terraform apply, realiza un POST HTTP hacia dicha URL. 
 
@@ -239,22 +239,86 @@ De esta manera, cada despliegue de infraestructura queda registrado y comunicado
 
 -------
 ## 9\. Despliegue
-#### *9.2 Despliegue con Terraform*
-#### *9.3 Despliegue continuo con GitHub Actions*
-#### *9.4 Rollover de ECS Task Definition*
-#### *9.5 Acceso al sistema (URL del ALB)*
+### *9.2 Despliegue con Terraform*
+### *9.3 Despliegue continuo con GitHub Actions*
+### *9.4 Rollover de ECS Task Definition*
+### *9.5 Acceso al sistema (URL del ALB)*
 ------
 ## 10\. Seguridad
-#### *10.1 IAM Roles*
-#### *10.2 Security Groups*
-#### *10.3 Policies mínimas necesarias*
-#### *10.4 Manejo de secretos*
+### *10.1 IAM Roles*
+### *10.2 Security Groups*
+### *10.3 Policies mínimas necesarias*
+### *10.4 Manejo de secretos*
 - GitHub Secrets
 - Variables de entorno
 - Política de no almacenar passwords en código
 ------
 ## 11\. Observabilidad y Monitoreo
-#### *11.1 CloudWatch Logs*
+### *11.1 CloudWatch Logs*
+  Dashboard de Monitoreo en AWS CloudWatch
+
+![WhatsApp Image 2025-11-30 at 15 41 58](https://github.com/user-attachments/assets/df2725a5-179d-4789-8576-07b8d8ff93ce)
+
+
+En el marco del proyecto se desarrolló un dashboard personalizado en Amazon CloudWatch con el objetivo de centralizar la observabilidad del sistema e integrar en una única vista las métricas más relevantes de los servicios utilizados. Este panel permite monitorear el rendimiento, detectar anomalías y evaluar el estado general de la infraestructura desplegada.
+
+## Objetivo del Dashboard
+
+El propósito del dashboard es ofrecer una visión unificada y en tiempo real del comportamiento del sistema, abarcando componentes críticos como:
+
+    Elastic Container Registry (ECR)
+    Application Load Balancer (ALB)
+    AWS Lambda
+    Métricas de tráfico y actividad HTTP
+
+Con esta información es posible validar el uso de recursos, analizar patrones de acceso y anticipar potenciales problemas operativos.
+
+## Secciones del Dashboard
+### Rendimiento de ECR
+
+El panel incluye dos métricas fundamentales para evaluar el rendimiento del Elastic Container Registry:
+
+    CPUUtilization (%)
+    MemoryUtilization (%)
+
+Estas métricas permiten monitorear el uso de recursos vinculado a las imágenes y tareas asociadas a contenedores. Los valores observados se mantienen en rangos bajos, lo que indica estabilidad y un consumo eficiente de recursos.
+
+### Balanceador de Carga (ALB)
+
+El dashboard presenta diversas métricas asociadas al Application Load Balancer, entre ellas:
+
+      Pico de LCU
+      Nuevas conexiones
+      Conexiones activas
+      Bytes procesados
+      Conteo de respuestas HTTP 400
+
+Estas métricas permiten analizar la demanda de tráfico, evaluar la eficiencia del balanceo y detectar posibles comportamientos anómalos en las solicitudes. Los datos reflejan cargas bajas y un funcionamiento estable.
+
+### Métricas de AWS Lambda
+
+El panel dedicado a Lambda incluye las métricas operativas más importantes:
+
+    Concurrencia utilizada
+    Concurrencia no reservada
+    Duración de ejecución
+    Errores
+    Cantidad de invocaciones
+    Throttles
+    Latencia de solicitudes
+
+Esta sección permite verificar el rendimiento y comportamiento de las funciones Lambda, asegurando que no existan fallos, cuellos de botella o saturación. En los resultados obtenidos no se presentan errores ni throttling.
+
+#### Beneficios del Dashboard
+
+    Permite un monitoreo centralizado de los servicios involucrados en el proyecto.
+    Facilita la detección temprana de fallas o degradaciones en el rendimiento.
+    Proporciona datos clave para la toma de decisiones relacionadas con escalabilidad y optimización.
+    Refuerza la estabilidad operativa del proyecto al brindar métricas en tiempo real.
+    Simplifica la validación del comportamiento de los componentes durante pruebas o despliegues.
+
+El dashboard implementado en Amazon CloudWatch constituye una herramienta fundamental para la observabilidad del proyecto, permitiendo monitorear métricas críticas de ejecución, tráfico y rendimiento. Su estructura clara y su enfoque orientado a los componentes principales aseguran una supervisión eficiente durante todo el ciclo de vida del sistema.
+
 #### *11.2 Métricas ECS*
 #### *11.3 Healthchecks*
 #### *11.4 Métricas ALB*
