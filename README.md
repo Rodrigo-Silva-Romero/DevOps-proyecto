@@ -77,23 +77,25 @@ La automatización del ciclo de integración y despliegue continuo se implementa
 
 Se diseñaron cuatro pipelines distintos, cada uno con responsabilidades bien definidas:
 
-1. **Terraform Apply**: despliegue de la infraestructura principal del proyecto (VPC, ECS, ALB, RDS, etc.).
+1. **Terraform Storage Deploy**: pipeline dedicado a la creación y gestión inicial del storage compuesto por los ecr y el bucket s3 
 
-2. **Deploy Only (Build & Deploy)**: testing de código, análisis de calidad, construcción de imágenes Docker, push a ECR y actualización del servicio ECS.
+2. **Terraform Apply**: despliegue de la infraestructura principal del proyecto para el entorno seleccionado (VPC, ECS, ALB, RDS, etc.).
 
-3. **Terraform Destroy**: eliminación controlada y segura de toda la infraestructura desplegada.
+3. **Deploy Only (Build & Deploy)**: testing de código, análisis de calidad, construcción de imágenes Docker, push a ECR y actualización del servicio ECS para cada entorno.
 
-4. **Terraform Storage Deploy**: pipeline dedicado a la creación y gestión inicial del storage del 
+4. **Terraform Destroy**: eliminación controlada y segura de toda la infraestructura seleccionada.
+
+
 
 **Disparadores configurados**
 
-Terraform Apply / Destroy : workflow\_dispatch (ejecución manual seleccionando environment: dev/staging/prod).
+Terraform Storage Deploy / Terraform Apply / Terraform Destroy : workflow\_dispatch (ejecución manual seleccionando environment: dev/staging/prod).
 
 Pipeline de deploy de App (main.yml),  se dispara automáticamente con Merge a main.
 
 ## **Motivos de la decisión**
 
-Los pipelines se separaron para garantizar **seguridad, control y claridad**, especialmente al incorporar el nuevo pipeline de *Storage Deploy*:
+Los pipelines se separaron para garantizar **seguridad, control y claridad**, ya que esto permite desacomplar cada etapa permitiendo levantar o destruir el entorno deseado sin afectar los demas.
 
 - **Responsabilidades independientes:**  
   Cada pipeline cumple un rol específico.  
@@ -101,10 +103,6 @@ Los pipelines se separaron para garantizar **seguridad, control y claridad**, es
   - *Deploy Only* gestiona la construcción y despliegue de contenedores sin tocar la infraestructura.  
   - *Terraform Storage Deploy* se encarga exclusivamente de crear los recursos base iniciales (S3 para tfstate y repositorios ECR).  
   Esta separación evita mezclar procesos, riesgos y permisos.
-
-- **Ciclos de vida distintos:**  
-  La infraestructura base (S3, ECR) se crea una sola vez; la infraestructura operativa cambia poco; las imágenes de la app cambian constantemente.  
-  Mantener pipelines aislados evita aplicar Terraform innecesariamente en etapas donde no corresponde.
 
 - **Mayor trazabilidad:**  
   Cada tipo de cambio queda auditado en su propio pipeline:  
@@ -131,7 +129,7 @@ Los pipelines se separaron para garantizar **seguridad, control y claridad**, es
 
 - **Cambios en infraestructura**: generar PR → revisar tfplan → ejecutar el pipeline Terraform Apply manualmente (workflow\_dispatch) para el environment objetivo. 
 
-- **Cambios de aplicación**: PR → merge a main → pipeline DEPLOY ONLY  construye imágenes, Sonar + tests, las sube a ECR y actualiza ECS automáticamente.
+- **Cambios de aplicación**: PR → merge a main → pipeline DEPLOY ONLY  construye imágenes, Sonar + tests, las sube a ECR y actualiza ECS automáticamente de los entornos.
 
 - **Destrucción de entornos**: ejecutar Terraform Destroy manualmente mediante workflow\_dispatch únicamente cuando sea necesario.
 
