@@ -2,12 +2,13 @@ import smtplib
 import os
 
 def lambda_handler(event, context):
-    sender = os.environ["SENDER_EMAIL"]        # tu Gmail
-    app_password = os.environ["APP_PASSWORD"]  # contraseña de app
-    receiver = "rodrigosilvaromero14@gmail.com"     # destinatario final
+    sender = os.environ["SENDER_EMAIL"]
+    app_password = os.environ["APP_PASSWORD"]
+    receiver = "rodrigosilvaromero14@gmail.com"
+    environment = os.environ.get("ENVIRONMENT", "desconocido")
 
-    subject = "Infra desplegada correctamente"
-    body = "La infraestructura se levanto correctamente con el pipeline."
+    subject = f"Infra desplegada correctamente en {environment}"
+    body = f"La infraestructura para el entorno {environment} se levantó correctamente con el pipeline."
 
     message = f"Subject: {subject}\n\n{body}"
 
