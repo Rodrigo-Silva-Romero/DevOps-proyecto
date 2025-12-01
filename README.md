@@ -352,3 +352,8 @@ Esta métrica permite anticipar picos de tráfico, comportamientos anómalos o p
 ---------
 ## 12\. Conclusiones del proyecto
 
+A lo largo del proyecto pudimos diseñar e implementar una arquitectura basada en microservicios, integrando componentes como API Gateway, Product Service, Inventory Service, Redis y Postgres. En paralelo, desarrollamos la infraestructura completa en AWS utilizando Terraform, lo que incluyó la creación de la VPC, subredes, balanceador de carga, servicios ECS Fargate, repositorios ECR y bases de datos administradas. Este proceso nos permitió comprender en profundidad la importancia de la infraestructura como código y las ventajas que ofrece en términos de control, organización y reproducibilidad.
+
+También configuramos un backend remoto en S3 para gestionar el terraform.tfstate y trabajamos con módulos reutilizables, fortaleciendo buenas prácticas de diseño modular. En la gestión del código adoptamos GitHub con un enfoque inicial de Trunk-Based Development, y a partir de esta experiencia aprendimos que ciertas prácticas ideales requieren adaptación cuando el equipo es reducido.
+
+Además, creamos pipelines de CI/CD segmentados por responsabilidad, integrando herramientas como SonarCloud y pruebas automatizadas para asegurar la calidad del código. Implementamos funciones Lambda, EventBridge y SNS para notificaciones automáticas post-deploy y construimos un dashboard en CloudWatch para centralizar métricas de los servicios. En conjunto, este proyecto nos permitió aplicar conocimientos técnicos avanzados y reflexionar sobre decisiones prácticas en contextos reales de desarrollo y operación.
