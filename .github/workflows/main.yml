@@ -193,7 +193,7 @@ jobs:
             infra/ecs-task/task-definition-staging.json > final-task-staging.json
       - name: Register TaskDefinition Staging
         run: |
-          NEW_TASK_ARN=$(aws ecs register-task-definition \
+          NEW_TASK_ARN=$(aws ecs.register-task-definition \
             --cli-input-json file://final-task-staging.json \
             --query "taskDefinition.taskDefinitionArn" \
             --output text)
@@ -232,4 +232,28 @@ jobs:
           echo "API_IMAGE=$API_IMAGE" >> $GITHUB_ENV
           echo "PRODUCT_IMAGE=$PRODUCT_IMAGE" >> $GITHUB_ENV
           echo "INVENTORY_IMAGE=$INVENTORY_IMAGE" >> $GITHUB_ENV
+
       - name: Generate TaskDefinition JSON (Prod)
+        run: |
+          sed \
+            -e "s|\${APIGATEWAY_IMAGE}|${{ env.API_IMAGE }}|g" \
+            -e "s|\${PRODUCT_IMAGE}|${{ env.PRODUCT_IMAGE }}|g" \
+            -e "s|\${INVENTORY_IMAGE}|${{ env.INVENTORY_IMAGE }}|g" \
+            infra/ecs-task/task-definition-prod.json > final-task-prod.json
+
+      - name: Register TaskDefinition Prod
+        run: |
+          NEW_TASK_ARN=$(aws ecs register-task-definition \
+            --cli-input-json file://final-task-prod.json \
+            --query "taskDefinition.taskDefinitionArn" \
+            --output text)
+          echo "NEW_TASK_ARN=$NEW_TASK_ARN" >> $GITHUB_ENV
+
+      - name: Update ECS Service Prod
+        run: |
+          aws ecs update-service \
+            --cluster prod-core-cluster \
+            --service prod-core-service \
+            --task-definition ${{ env.NEW_TASK_ARN }} \
+            --desired-count 1 \
+            --force-new-deployment
