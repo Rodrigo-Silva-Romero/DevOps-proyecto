@@ -153,8 +153,8 @@ jobs:
       - name: Update ECS Service Dev
         run: |
           aws ecs update-service \
-            --cluster dev-core-cluster \
-            --service dev-core-service \
+            --cluster dev-ecs-cluster \
+            --service dev-ecs-service \
             --task-definition ${{ env.NEW_TASK_ARN }} \
             --desired-count 1 \
             --force-new-deployment
@@ -201,8 +201,8 @@ jobs:
       - name: Update ECS Service Staging
         run: |
           aws ecs update-service \
-            --cluster staging-core-cluster \
-            --service staging-core-service \
+            --cluster staging-ecs-cluster \
+            --service staging-ecs-service \
             --task-definition ${{ env.NEW_TASK_ARN }} \
             --desired-count 1 \
             --force-new-deployment
@@ -252,8 +252,8 @@ jobs:
       - name: Update ECS Service Prod
         run: |
           aws ecs update-service \
-            --cluster prod-core-cluster \
-            --service prod-core-service \
+            --cluster prod-ecs-cluster \
+            --service prod-ecs-service \
             --task-definition ${{ env.NEW_TASK_ARN }} \
             --desired-count 1 \
             --force-new-deployment
