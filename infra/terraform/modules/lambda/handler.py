@@ -8,7 +8,7 @@ def lambda_handler(event, context):
     environment = os.environ.get("ENVIRONMENT", "desconocido")
 
     subject = f"Infra desplegada correctamente en {environment}"
-    body = f"La infraestructura para el entorno {environment} se levantó correctamente con el pipeline."
+    body = f"La infraestructura para el entorno {environment} se levanto correctamente con el pipeline."
 
     message = f"Subject: {subject}\n\n{body}"
 
