@@ -72,5 +72,6 @@ module "lambda" {
   sender_email  = var.sender_email
   app_password  = var.app_password
   lambda_name   = "infra-notify-${var.environment}"   # 👈 nombre único por entorno
+  environment   = var.environment
 }
 
