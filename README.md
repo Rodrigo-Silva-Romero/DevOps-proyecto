@@ -319,7 +319,28 @@ Esta sección permite verificar el rendimiento y comportamiento de las funciones
 
 El dashboard implementado en Amazon CloudWatch constituye una herramienta fundamental para la observabilidad del proyecto, permitiendo monitorear métricas críticas de ejecución, tráfico y rendimiento. Su estructura clara y su enfoque orientado a los componentes principales aseguran una supervisión eficiente durante todo el ciclo de vida del sistema.
 
-####  *Healthchecks*
+### *Alarmas*
+
+Alarmas Configuradas en CloudWatch
+
+<img width="715" height="143" alt="image" src="https://github.com/user-attachments/assets/cf95f576-deaf-49e2-b55c-c041cefa9e30" />
+
+Se definieron tres alarmas clave para monitorear el estado de la infraestructura:
+
+#### 1. ECS – CPUUtilization alta
+
+Se configuró una alarma para detectar cuando la CPU del servicio ECS supera el 80% durante 25 minutos (5 puntos de datos consecutivos).
+Esto permite identificar sobrecarga en las tareas y actuar antes de que el servicio se degrade.
+
+#### 2. Lambda – Duración elevada
+
+La alarma se dispara cuando la duración de la Lambda supera los 1500 ms dentro de un período de 5 minutos.
+Esto ayuda a detectar procesos lentos, cuellos de botella o necesidad de aumentar memoria/optimizar código.
+
+#### 3. ALB – PeakLCUs cercano al límite
+
+Se monitorea el consumo de LCUs del Application Load Balancer. La alarma se activa si PeakLCUs > 8 en un intervalo de 5 minutos.
+Esta métrica permite anticipar picos de tráfico, comportamientos anómalos o posibles incrementos de costo.
 
 ---------
 ## 12\. Conclusiones del proyecto
