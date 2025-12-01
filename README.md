@@ -343,6 +343,11 @@ LCU es la unidad que usa el ALB para medir cuánta carga está manejando, según
 Se monitorea el consumo de LCUs del Application Load Balancer. La alarma se activa si PeakLCUs > 8 en un intervalo de 5 minutos.
 Esta métrica permite anticipar picos de tráfico, comportamientos anómalos o posibles incrementos de costo.
 
+### *Evidencia de Notificacion por Mail de Alarma*
+
+<img width="544" height="390" alt="image" src="https://github.com/user-attachments/assets/2cea6401-3859-48ed-873a-954f110f9c9e" />
+
+
 ---------
 ## 12\. Conclusiones del proyecto
 
