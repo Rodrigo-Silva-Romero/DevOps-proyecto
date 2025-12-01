@@ -10,3 +10,8 @@ variable "sender_email" {
 variable "app_password" {
   type = string
 }
+
+variable "environment" {
+  description = "Nombre del entorno (dev, staging, prod)"
+  type        = string
+}
