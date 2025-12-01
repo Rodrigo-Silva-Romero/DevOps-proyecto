@@ -262,7 +262,7 @@ De esta manera, cada despliegue de infraestructura queda registrado y comunicado
 
 En el marco del proyecto se desarrolló un dashboard personalizado en Amazon CloudWatch con el objetivo de centralizar la observabilidad del sistema e integrar en una única vista las métricas más relevantes de los servicios utilizados. Este panel permite monitorear el rendimiento, detectar anomalías y evaluar el estado general de la infraestructura desplegada.
 
-## Objetivo del Dashboard
+### *11.2 Objetivo del Dashboard
 
 El propósito del dashboard es ofrecer una visión unificada y en tiempo real del comportamiento del sistema, abarcando componentes críticos como:
 
@@ -273,8 +273,8 @@ El propósito del dashboard es ofrecer una visión unificada y en tiempo real de
 
 Con esta información es posible validar el uso de recursos, analizar patrones de acceso y anticipar potenciales problemas operativos.
 
-## Secciones del Dashboard
-### Rendimiento de ECR
+### *11.3Secciones del Dashboard
+#### Rendimiento de ECR
 
 El panel incluye dos métricas fundamentales para evaluar el rendimiento del Elastic Container Registry:
 
@@ -283,7 +283,7 @@ El panel incluye dos métricas fundamentales para evaluar el rendimiento del Ela
 
 Estas métricas permiten monitorear el uso de recursos vinculado a las imágenes y tareas asociadas a contenedores. Los valores observados se mantienen en rangos bajos, lo que indica estabilidad y un consumo eficiente de recursos.
 
-### Balanceador de Carga (ALB)
+#### Balanceador de Carga (ALB)
 
 El dashboard presenta diversas métricas asociadas al Application Load Balancer, entre ellas:
 
@@ -295,7 +295,7 @@ El dashboard presenta diversas métricas asociadas al Application Load Balancer,
 
 Estas métricas permiten analizar la demanda de tráfico, evaluar la eficiencia del balanceo y detectar posibles comportamientos anómalos en las solicitudes. Los datos reflejan cargas bajas y un funcionamiento estable.
 
-### Métricas de AWS Lambda
+#### Métricas de AWS Lambda
 
 El panel dedicado a Lambda incluye las métricas operativas más importantes:
 
@@ -311,17 +311,16 @@ Esta sección permite verificar el rendimiento y comportamiento de las funciones
 
 #### Beneficios del Dashboard
 
-    Permite un monitoreo centralizado de los servicios involucrados en el proyecto.
-    Facilita la detección temprana de fallas o degradaciones en el rendimiento.
-    Proporciona datos clave para la toma de decisiones relacionadas con escalabilidad y optimización.
-    Refuerza la estabilidad operativa del proyecto al brindar métricas en tiempo real.
-    Simplifica la validación del comportamiento de los componentes durante pruebas o despliegues.
+- Permite un monitoreo centralizado de los servicios involucrados en el proyecto.
+- Facilita la detección temprana de fallas o degradaciones en el rendimiento.
+- Proporciona datos clave para la toma de decisiones relacionadas con escalabilidad y optimización.
+- Refuerza la estabilidad operativa del proyecto al brindar métricas en tiempo real.
+- Simplifica la validación del comportamiento de los componentes durante pruebas o despliegues.
 
 El dashboard implementado en Amazon CloudWatch constituye una herramienta fundamental para la observabilidad del proyecto, permitiendo monitorear métricas críticas de ejecución, tráfico y rendimiento. Su estructura clara y su enfoque orientado a los componentes principales aseguran una supervisión eficiente durante todo el ciclo de vida del sistema.
 
-#### *11.2 Métricas ECS*
-#### *11.3 Healthchecks*
-#### *11.4 Métricas ALB*
+####  Métricas ECS*
+####  Healthchecks*
 
 ---------
 ## 12\. Conclusiones del proyecto
