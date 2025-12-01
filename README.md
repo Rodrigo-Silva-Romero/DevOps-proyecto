@@ -73,6 +73,7 @@ La automatización del ciclo de integración y despliegue continuo se implementa
 
 #### *storage-apply.yml*
 
+<img width="2004" height="444" alt="image" src="https://github.com/user-attachments/assets/c086648d-aa76-4eba-a335-f95219af00d7" />
 
 
 ## **Estrategia de pipelines: Apply / Deploy de app / Destroy / Storage Deploy**
