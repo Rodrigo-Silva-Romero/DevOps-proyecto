@@ -625,4 +625,16 @@ También configuramos un backend remoto en S3 para gestionar el terraform.tfstat
 
 Además, creamos pipelines de CI/CD segmentados por responsabilidad, integrando herramientas como SonarCloud y pruebas automatizadas para asegurar la calidad del código. Implementamos funciones Lambda, EventBridge y SNS para notificaciones automáticas post-deploy y construimos un dashboard en CloudWatch para centralizar métricas de los servicios. En conjunto, este proyecto nos permitió aplicar conocimientos técnicos avanzados y reflexionar sobre decisiones prácticas en contextos reales de desarrollo y operación.
 
-12 
+### Aclaración sobre el uso de herramientas de IA
+
+Para la elaboración de este trabajo se utilizaron herramientas de Inteligencia Artificial, específicamente OpenAI (ChatGPT) y GitHub Copilot, con el objetivo de asistir en tareas de redacción, generación de ideas, revisión de código y mejora de la claridad comunicacional.
+
+Las herramientas mencionadas fueron empleadas únicamente como apoyo, mientras que la toma de decisiones, el diseño, la validación técnica y el contenido final fueron realizados por los autores. Se deja constancia de su uso a efectos de garantizar transparencia y cumplir con las buenas prácticas académicas en materia de citación y uso de tecnologías de IA.
+
+# 12 . Problematicas Presentadas 
+
+Durante el proceso de implementación, no se logró que las tareas de Amazon ECS desplegaran correctamente los contenedores correspondientes al servicio. Se realizaron múltiples pruebas y se exploraron diferentes métodos de despliegue, incluyendo ajustes en la definición de tareas, revisión de configuraciones de red, permisos y parámetros del servicio.
+
+Adicionalmente, se solicitó apoyo al docente responsable para analizar el inconveniente y validar las configuraciones utilizadas. A pesar de estos esfuerzos, el problema no pudo ser subsanado dentro del período de trabajo previsto.
+
+Se deja constancia de esta situación a efectos de mantener la trazabilidad de las actividades realizadas y justificar las decisiones de diseño y planificación tomadas en el proyecto.
