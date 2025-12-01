@@ -262,7 +262,7 @@ De esta manera, cada despliegue de infraestructura queda registrado y comunicado
 
 En el marco del proyecto se desarrolló un dashboard personalizado en Amazon CloudWatch con el objetivo de centralizar la observabilidad del sistema e integrar en una única vista las métricas más relevantes de los servicios utilizados. Este panel permite monitorear el rendimiento, detectar anomalías y evaluar el estado general de la infraestructura desplegada.
 
-### *11.2 Objetivo del Dashboard
+### *11.2 Objetivo del Dashboard*
 
 El propósito del dashboard es ofrecer una visión unificada y en tiempo real del comportamiento del sistema, abarcando componentes críticos como:
 
@@ -273,7 +273,7 @@ El propósito del dashboard es ofrecer una visión unificada y en tiempo real de
 
 Con esta información es posible validar el uso de recursos, analizar patrones de acceso y anticipar potenciales problemas operativos.
 
-### *11.3Secciones del Dashboard
+### *11.3Secciones del Dashboard*
 #### Rendimiento de ECR
 
 El panel incluye dos métricas fundamentales para evaluar el rendimiento del Elastic Container Registry:
