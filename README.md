@@ -68,6 +68,9 @@ La automatización del ciclo de integración y despliegue continuo se implementa
 
 #### *terraform-destroy.yml*
 
+<img width="1964" height="204" alt="image" src="https://github.com/user-attachments/assets/d0be83ff-a142-4309-a054-e2ea09c4f351" />
+
+
 #### *storage-apply.yml*
 
 <img width="2004" height="444" alt="image" src="https://github.com/user-attachments/assets/c086648d-aa76-4eba-a335-f95219af00d7" />
